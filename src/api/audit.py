@@ -12,8 +12,14 @@ router = APIRouter(
 @router.get("/inventory")
 def get_inventory():
     """ """
+
+    with engine.begin() as connection:
+        result = connection.execute(sqlalchemy.text("SELECT * FROM students"))
+        for row in result:
+            print(row)
+    return result
     
-    return {"number_of_potions": 0, "ml_in_barrels": 0, "gold": 0}
+    #return {"number_of_potions": 0, "ml_in_barrels": 0, "gold": 0}
 
 class Result(BaseModel):
     gold_match: bool
