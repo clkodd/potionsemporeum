@@ -16,9 +16,11 @@ def get_inventory():
     """ """
 
     with db.engine.begin() as connection:
-        result = connection.execute(sqlalchemy.text("SELECT * FROM global_inventory"))
+        red_potions = connection.execute(sqlalchemy.text("SELECT num_red_potions FROM global_inventory"))
+        red_ml = connection.execute(sqlalchemy.text("SELECT num_red_ml FROM global_inventory"))
+        gold = connection.execute(sqlalchemy.text("SELECT gold FROM global_inventory"))
     
-    return {"number_of_potions": result[0], "ml_in_barrels": result[1], "gold": result[2]}
+    return {"number_of_potions": red_potions, "ml_in_barrels": red_ml, "gold": gold}
 
 class Result(BaseModel):
     gold_match: bool
