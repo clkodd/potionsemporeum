@@ -14,12 +14,9 @@ def get_inventory():
     """ """
 
     with engine.begin() as connection:
-        result = connection.execute(sqlalchemy.text("SELECT * FROM students"))
-        for row in result:
-            print(row)
-    return result
+        result = connection.execute(sqlalchemy.text("SELECT * FROM global_inventory"))
     
-    #return {"number_of_potions": 0, "ml_in_barrels": 0, "gold": 0}
+    return {"number_of_potions": result[0], "ml_in_barrels": result[1], "gold": result[2]}
 
 class Result(BaseModel):
     gold_match: bool
