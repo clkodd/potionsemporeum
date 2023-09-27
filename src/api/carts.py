@@ -4,8 +4,13 @@ from src.api import auth
 import sqlalchemy
 from src import database as db
 
+
+"""
+insert SQL commands as: 
+
 with db.engine.begin() as connection:
         result = connection.execute(sql_to_execute)
+"""
 
 router = APIRouter(
     prefix="/carts",

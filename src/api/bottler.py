@@ -5,8 +5,12 @@ from src.api import auth
 import sqlalchemy
 from src import database as db
 
+"""
+insert SQL commands as: 
+
 with db.engine.begin() as connection:
         result = connection.execute(sql_to_execute)
+"""
 
 router = APIRouter(
     prefix="/bottler",
@@ -38,9 +42,22 @@ def get_bottle_plan():
 
     # Initial logic: bottle all barrels into red potions.
 
+    with db.engine.begin() as connection:
+        results = connection.execute("SELECT num_red_ml FROM global_inventory")
+
+    if results[1] > 0:
+        return [
+            {
+                "potion_type": [100, 0, 0, 0],
+                "quantity": 5,
+            }
+        ]
+
+"""
     return [
             {
                 "potion_type": [100, 0, 0, 0],
                 "quantity": 5,
             }
         ]
+"""

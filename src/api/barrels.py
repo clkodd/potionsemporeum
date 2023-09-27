@@ -4,8 +4,12 @@ from src.api import auth
 import sqlalchemy
 from src import database as db
 
+"""
+insert SQL commands as: 
+
 with db.engine.begin() as connection:
         result = connection.execute(sql_to_execute)
+"""
 
 router = APIRouter(
     prefix="/barrels",
@@ -35,9 +39,23 @@ def get_wholesale_purchase_plan(wholesale_catalog: list[Barrel]):
     """ """
     print(wholesale_catalog)
 
+    #purchase a new small red potion barrel only if the number of potions in inventory is less than 10
+    with db.engine.begin() as connection:
+        result = connection.execute("SELECT num_red_potions FROM global_inventory")
+
+    if (result[0]) < 10:
+        return [
+        {
+            "sku": "SMALL_RED_BARREL",
+            "quantity": 1,
+        }
+    ]
+
+"""
     return [
         {
             "sku": "SMALL_RED_BARREL",
             "quantity": 1,
         }
     ]
+"""
