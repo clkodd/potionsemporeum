@@ -25,7 +25,7 @@ def post_deliver_bottles(potions_delivered: list[PotionInventory]):
 
     with db.engine.begin() as connection:
         result = connection.execute(sqlalchemy.text("SELECT * FROM global_inventory"))
-        row1 = results.first()
+        row1 = result.first()
 
     with db.engine.begin() as connection:
         connection.execute(sqlalchemy.text("UPDATE global_inventory SET num_red_ml = :new_red_ml"), {"new_red_ml": row1.num_red_ml - (potions_delivered[0].quantity * 100)})
@@ -48,8 +48,8 @@ def get_bottle_plan():
     # Initial logic: bottle all barrels into red potions.
 
     with db.engine.begin() as connection:
-        results = connection.execute(sqlalchemy.text("SELECT * FROM global_inventory"))
-        row1 = results.first()
+        result = connection.execute(sqlalchemy.text("SELECT * FROM global_inventory"))
+        row1 = result.first()
 
     if row1.num_red_ml >= 100:
         return [

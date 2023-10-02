@@ -15,7 +15,7 @@ def get_catalog():
 
     with db.engine.begin() as connection:
         result = connection.execute(sqlalchemy.text("SELECT * FROM global_inventory"))
-        row1 = results.first()
+        row1 = result.first()
 
     return [
             {
