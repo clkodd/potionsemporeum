@@ -5,12 +5,6 @@ from src.api import auth
 import sqlalchemy
 from src import database as db
 
-"""
-insert SQL commands as: 
-
-with db.engine.begin() as connection:
-        result = connection.execute(sql_to_execute)
-"""
 
 router = APIRouter(
     prefix="/bottler",
@@ -18,16 +12,27 @@ router = APIRouter(
     dependencies=[Depends(auth.get_api_key)],
 )
 
+
 class PotionInventory(BaseModel):
     potion_type: list[int]
     quantity: int
+
 
 @router.post("/deliver")
 def post_deliver_bottles(potions_delivered: list[PotionInventory]):
     """ """
     print(potions_delivered)
 
+    with db.engine.begin() as connection:
+        result = connection.execute(sqlalchemy.text("SELECT * FROM global_inventory"))
+        row1 = results.first()
+
+    with db.engine.begin() as connection:
+        connection.execute(sqlalchemy.text("UPDATE global_inventory SET num_red_ml = :new_red_ml"), {"new_red_ml": row1.num_red_ml - (potions_delivered[0].quantity * 100)})
+        connection.execute(sqlalchemy.text("UPDATE global_inventory SET num_red_potions = :new_red_potions"), {"new_red_potions": row1.num_red_potions + potions_delivered[0].quantity})
+
     return "OK"
+
 
 # Gets called 4 times a day
 @router.post("/plan")
@@ -43,21 +48,13 @@ def get_bottle_plan():
     # Initial logic: bottle all barrels into red potions.
 
     with db.engine.begin() as connection:
-        results = connection.execute("SELECT num_red_ml FROM global_inventory")
+        results = connection.execute(sqlalchemy.text("SELECT * FROM global_inventory"))
+        row1 = results.first()
 
-    if results[1] > 0:
+    if row1.num_red_ml >= 100:
         return [
             {
                 "potion_type": [100, 0, 0, 0],
-                "quantity": 5,
+                "quantity": {row1.num_red_ml // 100},
             }
         ]
-
-"""
-    return [
-            {
-                "potion_type": [100, 0, 0, 0],
-                "quantity": 5,
-            }
-        ]
-"""

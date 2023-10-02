@@ -5,13 +5,6 @@ import sqlalchemy
 from src import database as db
 
 
-"""
-insert SQL commands as: 
-
-with db.engine.begin() as connection:
-        result = connection.execute(sql_to_execute)
-"""
-
 router = APIRouter(
     prefix="/carts",
     tags=["cart"],
@@ -49,6 +42,7 @@ def set_item_quantity(cart_id: int, item_sku: str, cart_item: CartItem):
 
 class CartCheckout(BaseModel):
     payment: str
+
 
 @router.post("/{cart_id}/checkout")
 def checkout(cart_id: int, cart_checkout: CartCheckout):

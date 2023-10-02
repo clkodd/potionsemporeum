@@ -4,18 +4,13 @@ from src.api import auth
 import sqlalchemy
 from src import database as db
 
-"""
-insert SQL commands as: 
-
-with db.engine.begin() as connection:
-        result = connection.execute(sql_to_execute)
-"""
 
 router = APIRouter(
     prefix="/barrels",
     tags=["barrels"],
     dependencies=[Depends(auth.get_api_key)],
 )
+
 
 class Barrel(BaseModel):
     sku: str
@@ -26,36 +21,40 @@ class Barrel(BaseModel):
 
     quantity: int
 
+
 @router.post("/deliver")
 def post_deliver_barrels(barrels_delivered: list[Barrel]):
     """ """
     print(barrels_delivered)
 
+    with db.engine.begin() as connection:
+        result = connection.execute(sqlalchemy.text("SELECT * FROM global_inventory"))
+        row1 = results.first()
+
+    with db.engine.begin() as connection:
+        connection.execute(sqlalchemy.text("UPDATE global_inventory SET gold = :new_gold"), {"new_gold": row1.gold - barrels_delivered[0].price})
+        connection.execute(sqlalchemy.text("UPDATE global_inventory SET num_red_ml = :new_red_ml"), {"new_red_ml": row1.num_red_ml + barrels_delivered[0].ml_per_barrel})
+
     return "OK"
 
-# Gets called once a day
+
 @router.post("/plan")
 def get_wholesale_purchase_plan(wholesale_catalog: list[Barrel]):
-    """ """
+    """ 
+    Gets called once a day
+    """
     print(wholesale_catalog)
 
-    #purchase a new small red potion barrel only if the number of potions in inventory is less than 10
     with db.engine.begin() as connection:
-        result = connection.execute("SELECT num_red_potions FROM global_inventory")
+        result = connection.execute(sqlalchemy.text("SELECT * FROM global_inventory"))
+        row1 = result.first()
 
-    if (result[0]) < 10:
-        return [
-        {
-            "sku": "SMALL_RED_BARREL",
-            "quantity": 1,
-        }
-    ]
-
-"""
-    return [
-        {
-            "sku": "SMALL_RED_BARREL",
-            "quantity": 1,
-        }
-    ]
-"""
+    for barrel in wholesale_catalog:
+        if barrel.sku == "SMALL_RED_BARREL":
+            if ((row1.num_red_potions) < 10) and (row1.gold >= barrel.price):
+                return [
+                {
+                    "sku": "SMALL_RED_BARREL",
+                    "quantity": 1,
+                }
+            ]

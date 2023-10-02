@@ -2,12 +2,6 @@ from fastapi import APIRouter
 import sqlalchemy
 from src import database as db
 
-"""
-insert SQL commands as: 
-
-with db.engine.begin() as connection:
-        result = connection.execute(sql_to_execute)
-"""
 
 router = APIRouter()
 
@@ -16,18 +10,18 @@ router = APIRouter()
 def get_catalog():
     """
     Each unique item combination must have only a single price.
+    Can return a max of 20 items.
     """
 
-    # Can return a max of 20 items.
-
     with db.engine.begin() as connection:
-        result = connection.execute("SELECT num_red_potions FROM global_inventory")
+        result = connection.execute(sqlalchemy.text("SELECT * FROM global_inventory"))
+        row1 = results.first()
 
     return [
             {
                 "sku": "RED_POTION_0",
                 "name": "red potion",
-                "quantity": result[0],
+                "quantity": row1.num_red_potions,
                 "price": 50,
                 "potion_type": [100, 0, 0, 0],
             }
