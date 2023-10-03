@@ -60,3 +60,7 @@ def get_bottle_plan():
                 "quantity": {row1[1] // 100},
             }
         ]
+    else:
+        return [
+            
+        ]

@@ -54,7 +54,7 @@ def get_wholesale_purchase_plan(wholesale_catalog: list[Barrel]):
     for barrel in wholesale_catalog:
         if barrel.sku == "SMALL_RED_BARREL":
             #if ((row1.num_red_potions) < 10) and (row1.gold >= barrel.price):
-            if (((row1[0] + 0) < 10) and ((row1[2] + 0)>= barrel.price)):
+            if ((row1[0] < 10) and (row1[2] >= barrel.price)):
                 return [
                     {
                         "sku": "SMALL_RED_BARREL",
@@ -63,32 +63,5 @@ def get_wholesale_purchase_plan(wholesale_catalog: list[Barrel]):
                 ]
             else:
                 return [
-                    {
-                        "sku": "SMALL_RED_BARREL",
-                        "quantity": 0,
-                    }
+                    
                 ]
-"""
-        for barrel in wholesale_catalog:
-            if barrel.sku == "SMALL_RED_BARREL":
-                price1 = barrel.price
-                skew = barrel.skew
-                print("PRICE:")
-                print(price1)
-                print("SKU:")
-                print(skew)
-
-        print("GOLD: ")
-        print(row1[2])
-        print("POTS:")
-        print(row1[0])
-
-    if ((row1[0] < 10) and (row1[2] >= price1)):
-        return [
-            {
-                "sku": "SMALL_RED_BARREL",
-                "quantity": 1,
-            }
-        ]
-        """
-                
