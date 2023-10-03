@@ -16,6 +16,7 @@ router = APIRouter(
 Carts = {}
 cartIDBase = 0
 
+
 class NewCart(BaseModel):
     customer: str
 
@@ -23,7 +24,8 @@ class NewCart(BaseModel):
 @router.post("/")
 def create_cart(new_cart: NewCart):
     """ """
-    cartIDBase += 1
+    global cartIDBase
+    cartIDBase = cartIDBase + 1
     Carts[cartIDBase] = [ new_cart.customer, [] ]
 
     return {"cart_id": cartIDBase}
