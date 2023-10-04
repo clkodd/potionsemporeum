@@ -1,8 +1,8 @@
-from fastapi import APIRouter, Depends, Request
+from fastapi  import APIRouter, Depends, Request
 from pydantic import BaseModel
-from src.api import auth
+from src.api  import auth
+from src      import database as db
 import sqlalchemy
-from src import database as db
 
 
 router = APIRouter(
@@ -64,6 +64,8 @@ class CartCheckout(BaseModel):
 @router.post("/{cart_id}/checkout")
 def checkout(cart_id: int, cart_checkout: CartCheckout):
     """ """
+    print(cart_checkout.payment)
+    
     reds_in_cart = Carts[cart_id][1][0][1]
     cost = reds_in_cart * 50
 

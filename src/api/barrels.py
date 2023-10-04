@@ -1,8 +1,8 @@
-from fastapi import APIRouter, Depends
+from fastapi  import APIRouter, Depends
 from pydantic import BaseModel
-from src.api import auth
+from src.api  import auth
+from src      import database as db
 import sqlalchemy
-from src import database as db
 
 
 router = APIRouter(
@@ -31,7 +31,6 @@ def post_deliver_barrels(barrels_delivered: list[Barrel]):
         result = connection.execute(sqlalchemy.text("SELECT * FROM global_inventory"))
         row1 = result.first()
 
-    with db.engine.begin() as connection:
         connection.execute(sqlalchemy.text("UPDATE global_inventory SET gold = :new_gold"), {"new_gold": row1[2] - barrels_delivered[0].price})
         connection.execute(sqlalchemy.text("UPDATE global_inventory SET num_red_ml = :new_red_ml"), {"new_red_ml": row1[1] + barrels_delivered[0].ml_per_barrel})
 
@@ -53,7 +52,6 @@ def get_wholesale_purchase_plan(wholesale_catalog: list[Barrel]):
 
     for barrel in wholesale_catalog:
         if barrel.sku == "SMALL_RED_BARREL":
-            #if ((row1.num_red_potions) < 10) and (row1.gold >= barrel.price):
             if ((row1[0] < 10) and (row1[2] >= barrel.price)):
                 return [
                     {
