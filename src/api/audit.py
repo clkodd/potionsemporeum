@@ -21,7 +21,7 @@ def get_inventory():
         result = connection.execute(sqlalchemy.text("SELECT * FROM global_inventory"))
         row1 = result.first()
     
-    return {"number_of_potions": {row1[0]}, "ml_in_barrels": {row1[1]}, "gold": {row1[2]}}
+    return {"number_of_potions": {row1.num_red_potions}, "ml_in_barrels": {row1.num_red_ml}, "gold": {row1.gold}}
 
 
 class Result(BaseModel):
