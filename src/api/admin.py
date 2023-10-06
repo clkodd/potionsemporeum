@@ -23,7 +23,7 @@ def reset():
         result = connection.execute(sqlalchemy.text("SELECT * FROM global_inventory"))
         row1 = result.first()
     
-        for i in range(len(row1)):
+        for i in row1.items():
                 #connection.execute(sqlalchemy.text("UPDATE global_inventory SET gold = 100, num_red_ml = 0, num_red_potions = 0"))
             connection.execute(sqlalchemy.text("UPDATE global_inventory SET :column = 0"), {"column": row1[i]})
                 
