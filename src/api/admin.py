@@ -25,7 +25,7 @@ def reset():
     
         for i in row1.items():
                 #connection.execute(sqlalchemy.text("UPDATE global_inventory SET gold = 100, num_red_ml = 0, num_red_potions = 0"))
-            connection.execute(sqlalchemy.text("UPDATE global_inventory SET :column = 0"), {"column": row1[i]})
+            connection.execute(sqlalchemy.text("UPDATE global_inventory SET :column = 0"), {"column": i})
                 
         connection.execute(sqlalchemy.text("UPDATE global_inventory SET gold = 100"))
     #with db.engine.begin() as connection:
