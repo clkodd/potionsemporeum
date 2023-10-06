@@ -16,17 +16,17 @@ def get_catalog():
     with db.engine.begin() as connection:
         result = connection.execute(sqlalchemy.text("SELECT * FROM global_inventory"))
         row1 = result.first()
-    if row1[0] > 0:
-        return [
+
+    catalog = []
+    
+    if row1.num_red_potions > 0:
+        catalog.append(
                 {
                     "sku": "RED_POTION_0",
                     "name": "red potion",
-                    "quantity": row1[0],
+                    "quantity": row1.num_red_potions,
                     "price": 50,
                     "potion_type": [100, 0, 0, 0],
                 }
-            ]
-    else:
-        return [
-            
-        ]
+        )
+    return catalog

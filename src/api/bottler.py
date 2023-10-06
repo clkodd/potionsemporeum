@@ -28,8 +28,8 @@ def post_deliver_bottles(potions_delivered: list[PotionInventory]):
         row1 = result.first()
 
     with db.engine.begin() as connection:
-        connection.execute(sqlalchemy.text("UPDATE global_inventory SET num_red_ml = :new_red_ml"), {"new_red_ml": row1[1] - (potions_delivered[0].quantity * 100)})
-        connection.execute(sqlalchemy.text("UPDATE global_inventory SET num_red_potions = :new_red_potions"), {"new_red_potions": row1[0] + potions_delivered[0].quantity})
+        connection.execute(sqlalchemy.text("UPDATE global_inventory SET num_red_ml = :new_red_ml"), {"new_red_ml": row1.num_red_ml - (potions_delivered[0].quantity * 100)})
+        connection.execute(sqlalchemy.text("UPDATE global_inventory SET num_red_potions = :new_red_potions"), {"new_red_potions": row1.num_red_potions + potions_delivered[0].quantity})
 
     return "OK"
 
@@ -51,13 +51,11 @@ def get_bottle_plan():
         result = connection.execute(sqlalchemy.text("SELECT * FROM global_inventory"))
         row1 = result.first()
 
-# row1[0] = num_red_potions, [1] = num_red_ml, [2] = gold
-
-    if row1[1] >= 100:
+    if row1.num_red_ml >= 100:
         return [
             {
                 "potion_type": [100, 0, 0, 0],
-                "quantity": {row1[1] // 100},
+                "quantity": {row1.num_red_ml // 100},
             }
         ]
     else:

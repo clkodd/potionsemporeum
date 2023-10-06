@@ -73,8 +73,8 @@ def checkout(cart_id: int, cart_checkout: CartCheckout):
         result = connection.execute(sqlalchemy.text("SELECT * FROM global_inventory"))
         row1 = result.first()
 
-        connection.execute(sqlalchemy.text("UPDATE global_inventory SET gold = :new_gold"), {"new_gold": row1[2] + cost})
-        connection.execute(sqlalchemy.text("UPDATE global_inventory SET num_red_potions = :new_red_potions"), {"new_red_potions": row1[0] - reds_in_cart})
+        connection.execute(sqlalchemy.text("UPDATE global_inventory SET gold = :new_gold"), {"new_gold": row1.gold + cost})
+        connection.execute(sqlalchemy.text("UPDATE global_inventory SET num_red_potions = :new_red_potions"), {"new_red_potions": row1.num_red_potions - reds_in_cart})
 
     del Carts[cart_id]
 
