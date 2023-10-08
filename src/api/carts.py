@@ -65,17 +65,33 @@ class CartCheckout(BaseModel):
 def checkout(cart_id: int, cart_checkout: CartCheckout):
     """ """
     print(cart_checkout.payment)
-    
-    reds_in_cart = Carts[cart_id][1][0][1]
-    cost = reds_in_cart * 50
+
+    cost = 0
+    num_reds = 0
+    num_greens = 0
+    num_blues = 0
+
+    for potion_item in Carts[cart_id][1]:   # operates on the list of lists: items are [potion sku, quantity]
+        cost += potion_item[1] * 50   # everything costs 50
+        if "RED" in potion_item[0]:
+            num_reds += 1
+        elif "GREEN" in potion_item[0]:
+            num_greens += 1
+        elif "BLUE" in potion_item[0]:
+            num_blues += 1
 
     with db.engine.begin() as connection:
         result = connection.execute(sqlalchemy.text("SELECT * FROM global_inventory"))
         row1 = result.first()
 
         connection.execute(sqlalchemy.text("UPDATE global_inventory SET gold = :new_gold"), {"new_gold": row1.gold + cost})
-        connection.execute(sqlalchemy.text("UPDATE global_inventory SET num_red_potions = :new_red_potions"), {"new_red_potions": row1.num_red_potions - reds_in_cart})
-
+        connection.execute(sqlalchemy.text("UPDATE global_inventory SET num_red_potions = :new_red_potions, \
+                                                                        num_green_potions = :new_green_potions, \
+                                                                        num_blue_potions = :new_blue_potions"), \
+                                                                      {"new_red_potions": row1.num_red_potions - num_reds, \
+                                                                       "new_green_potions": row1.num_green_potions - num_greens, \
+                                                                       "new_blue_potions": row1.num_blue_potions - num_blues})
+    
     del Carts[cart_id]
 
-    return {"total_potions_bought": reds_in_cart, "total_gold_paid": cost}
+    return {"total_potions_bought": num_reds + num_greens + num_blues, "total_gold_paid": cost}

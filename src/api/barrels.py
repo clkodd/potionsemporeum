@@ -21,18 +21,40 @@ class Barrel(BaseModel):
 
     quantity: int
 
+# buy a red barrel first
+last_barrel_purchased = "GREEN"
+
 
 @router.post("/deliver")
 def post_deliver_barrels(barrels_delivered: list[Barrel]):
     """ """
     print(barrels_delivered)
 
+    cost = 0
+    red_ml = 0
+    green_ml = 0
+    blue_ml = 0
+
+    for barrel in barrels_delivered:
+        cost += barrel.price * barrel.quantity
+        if "RED" in barrel.sku:
+            red_ml += barrel.ml_per_barrel * barrel.quantity
+        elif "GREEN" in barrel.sku:
+            green_ml += barrel.ml_per_barrel * barrel.quantity
+        elif "BLUE" in barrel.sku:
+            blue_ml += barrel.ml_per_barrel * barrel.quantity
+
     with db.engine.begin() as connection:
         result = connection.execute(sqlalchemy.text("SELECT * FROM global_inventory"))
         row1 = result.first()
 
-        connection.execute(sqlalchemy.text("UPDATE global_inventory SET gold = :new_gold"), {"new_gold": row1.gold - barrels_delivered[0].price})
-        connection.execute(sqlalchemy.text("UPDATE global_inventory SET num_red_ml = :new_red_ml"), {"new_red_ml": row1.num_red_ml + barrels_delivered[0].ml_per_barrel})
+        connection.execute(sqlalchemy.text("UPDATE global_inventory SET gold = :new_gold"), {"new_gold": row1.gold - cost})
+        connection.execute(sqlalchemy.text("UPDATE global_inventory SET num_red_ml = :new_red_ml, \
+                                                                        num_green_ml = :new_green_ml, \
+                                                                        num_blue_ml = :new_blue_ml"), \
+                                                                      {"new_red_ml": row1.num_red_ml + red_ml, \
+                                                                       "new_green_ml": row1.num_green_ml + green_ml, \
+                                                                       "new_blue_ml": row1.num_blue_ml + blue_ml})
 
     return "OK"
 
@@ -48,18 +70,46 @@ def get_wholesale_purchase_plan(wholesale_catalog: list[Barrel]):
         result = connection.execute(sqlalchemy.text("SELECT * FROM global_inventory"))
         row1 = result.first()
 
-        # row1[0] = num_red_potions, [1] = num_red_ml, [2] = gold
+    plan = []
+
+    """
+        if barrel.sku == "SMALL_RED_BARREL":
+                if ((row1.num_red_potions < 10) and (row1.gold >= barrel.price)):
+                    plan.append(
+                        {
+                            "sku": "SMALL_RED_BARREL",
+                            "quantity": 1,
+                        }
+                    )
+    """
 
     for barrel in wholesale_catalog:
-        if barrel.sku == "SMALL_RED_BARREL":
-            if ((row1.num_red_potions < 10) and (row1.gold >= barrel.price)):
-                return [
-                    {
-                        "sku": "SMALL_RED_BARREL",
-                        "quantity": 1,
-                    }
-                ]
-            else:
-                return [
-                    
-                ]
+        if barrel.sku == "SMALL_GREEN_BARREL" and last_barrel_purchased == "BLUE" and row1.gold >= barrel.price:
+            plan.append(
+                {
+                    "sku": "SMALL_GREEN_BARREL",
+                    "quantity": row1.gold // barrel.price,
+                }
+            )
+            last_barrel_purchased = "GREEN"
+            return plan
+        elif barrel.sku == "SMALL_RED_BARREL" and last_barrel_purchased == "GREEN" and row1.gold >= barrel.price:
+            plan.append(
+                {
+                    "sku": "SMALL_RED_BARREL",
+                    "quantity": row1.gold // barrel.price,
+                }
+            )
+            last_barrel_purchased = "RED"
+            return plan
+        elif barrel.sku == "SMALL_BLUE_BARREL" and last_barrel_purchased == "RED" and row1.gold >= barrel.price:
+            plan.append(
+                {
+                    "sku": "SMALL_BLUE_BARREL",
+                    "quantity": row1.gold // barrel.price,
+                }
+            )
+            last_barrel_purchased = "BLUE"
+            return plan
+
+    return plan
