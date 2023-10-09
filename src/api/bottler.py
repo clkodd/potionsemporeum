@@ -27,7 +27,7 @@ def post_deliver_bottles(potions_delivered: list[PotionInventory]):
     green_potions = 0
     blue_potions = 0
 
-    for potion in barrels_delivered:
+    for potion in potions_delivered:
         if potion.potion_type[0] == 100:    # red
             red_potions += potion.quantity
         elif potion.potion_type[1] == 100:  # green
