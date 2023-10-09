@@ -94,4 +94,6 @@ def checkout(cart_id: int, cart_checkout: CartCheckout):
     
     del Carts[cart_id]
 
+    print("REDS sold: " + str(num_reds) + "\n GREENS sold: " + str(num_greens) + "\n BLUES sold: " + str(num_blues))
+
     return {"total_potions_bought": num_reds + num_greens + num_blues, "total_gold_paid": cost}
