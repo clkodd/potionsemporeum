@@ -76,14 +76,42 @@ def get_wholesale_purchase_plan(wholesale_catalog: list[Barrel]):
     greens = [row1.num_green_potions, row1.num_green_ml, "GREEN"]
     blues = [row1.num_blue_potions, row1.num_blue_ml, "BLUE"]
 
-    buy_color = min(reds, greens, blues)[1]
+    potions = [reds, greens, blues]
+    buy_set1 = min(potions)
+    buy_color1 = buy_set1[1]
 
     for barrel in wholesale_catalog:
-        if buy_color in barrel.sku and row1.gold >= barrel.price:
+        if buy_color1 in barrel.sku and row1.gold >= barrel.price:
             plan.append(
                         {
                             "sku": barrel.sku,
-                            "quantity": row1.gold // barrel.price,
+                            "quantity": 1,
+                        }
+            )
+
+    potions.remove(buy_set)
+    buy_set2 = min(potions)
+    buy_color2 = buy_set2[1]
+
+    for barrel in wholesale_catalog:
+        if buy_color2 in barrel.sku and row1.gold >= barrel.price:
+            plan.append(
+                        {
+                            "sku": barrel.sku,
+                            "quantity": 1,
+                        }
+            )
+
+    potions.remove(buy_set2)
+    buy_set3 = min(potions)
+    buy_color3 = buy_set3[1]
+
+    for barrel in wholesale_catalog:
+        if buy_color3 in barrel.sku and row1.gold >= barrel.price:
+            plan.append(
+                        {
+                            "sku": barrel.sku,
+                            "quantity": 1,
                         }
             )
 
