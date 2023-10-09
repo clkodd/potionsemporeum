@@ -80,34 +80,38 @@ def get_wholesale_purchase_plan(wholesale_catalog: list[Barrel]):
     buy_set1 = min(potions)
     buy_color1 = buy_set1[2]
 
+    running_gold = row1.gold
+
     for barrel in wholesale_catalog:
-        if buy_color1 in barrel.sku and row1.gold >= barrel.price:
+        if buy_color1 in barrel.sku and running_gold >= barrel.price:
             plan.append(
                         {
                             "sku": barrel.sku,
                             "quantity": 1,
                         }
             )
+            running_gold -= barrel.price
 
     potions.remove(buy_set1)
     buy_set2 = min(potions)
     buy_color2 = buy_set2[2]
 
     for barrel in wholesale_catalog:
-        if buy_color2 in barrel.sku and row1.gold >= barrel.price:
+        if buy_color2 in barrel.sku and running_gold >= barrel.price:
             plan.append(
                         {
                             "sku": barrel.sku,
                             "quantity": 1,
                         }
             )
+            running_gold -= barrel.price
 
     potions.remove(buy_set2)
     buy_set3 = min(potions)
     buy_color3 = buy_set3[2]
 
     for barrel in wholesale_catalog:
-        if buy_color3 in barrel.sku and row1.gold >= barrel.price:
+        if buy_color3 in barrel.sku and running_gold >= barrel.price:
             plan.append(
                         {
                             "sku": barrel.sku,
