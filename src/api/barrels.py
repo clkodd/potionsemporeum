@@ -72,9 +72,9 @@ def get_wholesale_purchase_plan(wholesale_catalog: list[Barrel]):
 
     plan = []
 
-    reds = [row1.num_red_potions, "RED"]
-    greens = [row1.num_green_potions, "GREEN"]
-    blues = [row1.num_blue_potions, "BLUE"]
+    reds = [row1.num_red_potions, row1.num_red_ml, "RED"]
+    greens = [row1.num_green_potions, row1.num_green_ml, "GREEN"]
+    blues = [row1.num_blue_potions, row1.num_blue_ml, "BLUE"]
 
     buy_color = min(reds, greens, blues)[1]
 
