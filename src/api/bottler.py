@@ -79,21 +79,21 @@ def get_bottle_plan():
         plan.append(
             {
                 "potion_type": [100, 0, 0, 0],
-                "quantity": {row1.num_red_ml // 100},
+                "quantity": row1.num_red_ml // 100,
             }
         )
     if row1.num_green_ml >= 100:
         plan.append(
             {
                 "potion_type": [0, 100, 0, 0],
-                "quantity": {row1.num_green_ml // 100},
+                "quantity": row1.num_green_ml // 100,
             }
         )
     if row1.num_blue_ml >= 100:
         plan.append(
             {
                 "potion_type": [0, 0, 100, 0],
-                "quantity": {row1.num_blue_ml // 100},
+                "quantity": row1.num_blue_ml // 100,
             }
         )
     
