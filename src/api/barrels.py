@@ -89,7 +89,7 @@ def get_wholesale_purchase_plan(wholesale_catalog: list[Barrel]):
                         }
             )
 
-    potions.remove(buy_set)
+    potions.remove(buy_set1)
     buy_set2 = min(potions)
     buy_color2 = buy_set2[2]
 
