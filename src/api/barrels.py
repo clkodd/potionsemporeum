@@ -22,7 +22,7 @@ class Barrel(BaseModel):
     quantity: int
 
 # buy a red barrel first
-last_barrel_purchased = "GREEN"
+# last_barrel_purchased = "GREEN"
 
 
 @router.post("/deliver")
@@ -72,6 +72,23 @@ def get_wholesale_purchase_plan(wholesale_catalog: list[Barrel]):
 
     plan = []
 
+    reds = [row1.num_red_potions, "RED"]
+    greens = [row1.num_green_potions, "GREEN"]
+    blues = [row1.num_blue_potions, "BLUE"]
+
+    buy_color = min(reds, greens, blues)[1]
+
+    for barrel in wholesale_catalog:
+        if buy_color in barrel.sku and row1.gold >= barrel.price:
+            plan.append(
+                        {
+                            "sku": barrel.sku,
+                            "quantity": row1.gold // barrel.price,
+                        }
+            )
+
+    return plan
+
     """
         if barrel.sku == "SMALL_RED_BARREL":
                 if ((row1.num_red_potions < 10) and (row1.gold >= barrel.price)):
@@ -81,7 +98,7 @@ def get_wholesale_purchase_plan(wholesale_catalog: list[Barrel]):
                             "quantity": 1,
                         }
                     )
-    """
+    -----
 
     for barrel in wholesale_catalog:
         if barrel.sku == "SMALL_GREEN_BARREL" and last_barrel_purchased == "BLUE" and row1.gold >= barrel.price:
@@ -113,3 +130,4 @@ def get_wholesale_purchase_plan(wholesale_catalog: list[Barrel]):
             return plan
 
     return plan
+"""
