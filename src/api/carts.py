@@ -26,7 +26,7 @@ def create_cart(new_cart: NewCart):
     """ """
     global cartIDBase
     cartIDBase = cartIDBase + 1
-    Carts[cartIDBase] = [ new_cart.customer, [] ]
+    Carts[cartIDBase] = [new_cart.customer, []]
 
     return {"cart_id": cartIDBase}
 
@@ -51,7 +51,13 @@ class CartItem(BaseModel):
 def set_item_quantity(cart_id: int, item_sku: str, cart_item: CartItem):
     """ """
     curr_items = Carts[cart_id][1]
-    curr_items.append([item_sku, cart_item.quantity])
+
+    for pair in curr_items:
+        if item_sku in pair:
+            pair[1] += cart_item.quantity
+    else:
+        curr_items.append([item_sku, cart_item.quantity])
+
     Carts[cart_id] = [Carts[cart_id][0], curr_items]
 
     return "OK"
@@ -72,13 +78,13 @@ def checkout(cart_id: int, cart_checkout: CartCheckout):
     num_blues = 0
 
     for potion_item in Carts[cart_id][1]:   # operates on the list of lists: items are [potion sku, quantity]
-        cost += potion_item[1] * 50   # everything costs 50
+        cost += potion_item[1] * 50  # everything costs 35
         if "RED" in potion_item[0]:
-            num_reds += 1
+            num_reds += potion_item[1]
         elif "GREEN" in potion_item[0]:
-            num_greens += 1
+            num_greens += potion_item[1]
         elif "BLUE" in potion_item[0]:
-            num_blues += 1
+            num_blues += potion_item[1]
 
     with db.engine.begin() as connection:
         result = connection.execute(sqlalchemy.text("SELECT * FROM global_inventory"))
