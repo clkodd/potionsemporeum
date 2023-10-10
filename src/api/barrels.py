@@ -80,6 +80,8 @@ def get_wholesale_purchase_plan(wholesale_catalog: list[Barrel]):
     buy_set1 = min(potions)
     buy_color1 = buy_set1[2]
 
+    buy_color1 == "RED"
+
     running_gold = row1.gold
 
     for barrel in wholesale_catalog:
@@ -132,34 +134,48 @@ def get_wholesale_purchase_plan(wholesale_catalog: list[Barrel]):
                     )
     -----
 
+    
+
+
+
+
+
+for barrel in wholesale_catalog:
+        if buy_color1 in barrel.sku and "SMALL" in barrel.sku and running_gold >= barrel.price:
+            plan.append(
+                        {
+                            "sku": barrel.sku,
+                            "quantity": 1,
+                        }
+            )
+            running_gold -= barrel.price
+
+    potions.remove(buy_set1)
+    buy_set2 = min(potions)
+    buy_color2 = buy_set2[2]
+
     for barrel in wholesale_catalog:
-        if barrel.sku == "SMALL_GREEN_BARREL" and last_barrel_purchased == "BLUE" and row1.gold >= barrel.price:
+        if buy_color2 in barrel.sku and "SMALL" in barrel.sku and running_gold >= barrel.price:
             plan.append(
-                {
-                    "sku": "SMALL_GREEN_BARREL",
-                    "quantity": row1.gold // barrel.price,
-                }
+                        {
+                            "sku": barrel.sku,
+                            "quantity": 1,
+                        }
             )
-            last_barrel_purchased = "GREEN"
-            return plan
-        elif barrel.sku == "SMALL_RED_BARREL" and last_barrel_purchased == "GREEN" and row1.gold >= barrel.price:
+            running_gold -= barrel.price
+
+    potions.remove(buy_set2)
+    buy_set3 = min(potions)
+    buy_color3 = buy_set3[2]
+
+    for barrel in wholesale_catalog:
+        if buy_color3 in barrel.sku and "SMALL" in barrel.sku and running_gold >= barrel.price:
             plan.append(
-                {
-                    "sku": "SMALL_RED_BARREL",
-                    "quantity": row1.gold // barrel.price,
-                }
+                        {
+                            "sku": barrel.sku,
+                            "quantity": 1,
+                        }
             )
-            last_barrel_purchased = "RED"
-            return plan
-        elif barrel.sku == "SMALL_BLUE_BARREL" and last_barrel_purchased == "RED" and row1.gold >= barrel.price:
-            plan.append(
-                {
-                    "sku": "SMALL_BLUE_BARREL",
-                    "quantity": row1.gold // barrel.price,
-                }
-            )
-            last_barrel_purchased = "BLUE"
-            return plan
 
     return plan
 """
