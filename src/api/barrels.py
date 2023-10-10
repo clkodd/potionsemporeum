@@ -80,6 +80,7 @@ def get_wholesale_purchase_plan(wholesale_catalog: list[Barrel]):
     buy_set1 = min(potions)
     buy_color1 = buy_set1[2]
 
+    buy_set1 = reds
     buy_color1 == "RED"
 
     running_gold = row1.gold
