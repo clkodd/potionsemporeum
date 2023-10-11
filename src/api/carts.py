@@ -78,7 +78,7 @@ def checkout(cart_id: int, cart_checkout: CartCheckout):
 
     for potion_item in Carts[cart_id][1]:   # operates on the list of lists: items are [potion sku, quantity]
         if "RED" in potion_item[0]:
-            cost += potion_item[1] * 5
+            cost += potion_item[1] * 50
             num_reds += potion_item[1]
         elif "GREEN" in potion_item[0]:
             cost += potion_item[1] * 50
