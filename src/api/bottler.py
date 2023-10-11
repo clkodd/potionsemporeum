@@ -36,22 +36,18 @@ def post_deliver_bottles(potions_delivered: list[PotionInventory]):
             blue_potions += potion.quantity
 
     with db.engine.begin() as connection:
-        result = connection.execute(sqlalchemy.text("SELECT * FROM global_inventory"))
-        row1 = result.first()
-
-        connection.execute(sqlalchemy.text("UPDATE global_inventory SET num_red_potions = :new_red_potions, \
-                                                                        num_green_potions = :new_green_potions, \
-                                                                        num_blue_potions = :new_blue_potions"), \
-                                                                      {"new_red_potions": row1.num_red_potions + red_potions, \
-                                                                       "new_green_potions": row1.num_green_potions + green_potions, \
-                                                                       "new_blue_potions": row1.num_blue_potions + blue_potions})
-
-        connection.execute(sqlalchemy.text("UPDATE global_inventory SET num_red_ml = :new_red_ml, \
-                                                                        num_green_ml = :new_green_ml, \
-                                                                        num_blue_ml = :new_blue_ml"), \
-                                                                      {"new_red_ml": row1.num_red_ml - red_potions * 100, \
-                                                                       "new_green_ml": row1.num_green_ml - green_potions * 100, \
-                                                                       "new_blue_ml": row1.num_blue_ml - blue_potions * 100})
+        connection.execute(sqlalchemy.text("UPDATE global_inventory SET num_red_potions = num_red_potions + :new_red_potions, \
+                                                                        num_green_potions = num_green_potions + :new_green_potions, \
+                                                                        num_blue_potions = num_blue_potions + :new_blue_potions, \
+                                                                        num_red_ml = num_red_ml - :new_red_ml, \
+                                                                        num_green_ml = num_green_ml - :new_green_ml, \
+                                                                        num_blue_ml = num_blue_ml - :new_blue_ml"), \
+                                                                      {"new_red_potions": red_potions, \
+                                                                       "new_green_potions": green_potions, \
+                                                                       "new_blue_potions": blue_potions, \
+                                                                       "new_red_ml": red_potions * 100, \
+                                                                       "new_green_ml": green_potions * 100, \
+                                                                       "new_blue_ml": blue_potions * 100})
 
     return "OK"
 

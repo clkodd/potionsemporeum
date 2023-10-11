@@ -88,19 +88,16 @@ def checkout(cart_id: int, cart_checkout: CartCheckout):
             num_blues += potion_item[1]
 
     with db.engine.begin() as connection:
-        result = connection.execute(sqlalchemy.text("SELECT * FROM global_inventory"))
-        row1 = result.first()
-
-        connection.execute(sqlalchemy.text("UPDATE global_inventory SET gold = :new_gold"), {"new_gold": row1.gold + cost})
-        connection.execute(sqlalchemy.text("UPDATE global_inventory SET num_red_potions = :new_red_potions, \
-                                                                        num_green_potions = :new_green_potions, \
-                                                                        num_blue_potions = :new_blue_potions"), \
-                                                                      {"new_red_potions": row1.num_red_potions - num_reds, \
-                                                                       "new_green_potions": row1.num_green_potions - num_greens, \
-                                                                       "new_blue_potions": row1.num_blue_potions - num_blues})
+        connection.execute(sqlalchemy.text("UPDATE global_inventory SET gold = gold + :cost, \
+                                                                        num_red_potions = num_red_potions - :new_red_potions, \
+                                                                        num_green_potions = num_green_potions - :new_green_potions, \
+                                                                        num_blue_potions = num_blue_potions - :new_blue_potions"), \
+                                                                      {"cost": cost, \
+                                                                       "new_red_potions": num_reds, \
+                                                                       "new_green_potions": num_greens, \
+                                                                       "new_blue_potions": num_blues})
     
     del Carts[cart_id]
 
     print("REDS sold: " + str(num_reds) + "\n GREENS sold: " + str(num_greens) + "\n BLUES sold: " + str(num_blues))
-
     return {"total_potions_bought": num_reds + num_greens + num_blues, "total_gold_paid": cost}

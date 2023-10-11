@@ -21,9 +21,6 @@ class Barrel(BaseModel):
 
     quantity: int
 
-# buy a red barrel first
-# last_barrel_purchased = "GREEN"
-
 
 @router.post("/deliver")
 def post_deliver_barrels(barrels_delivered: list[Barrel]):
@@ -34,6 +31,7 @@ def post_deliver_barrels(barrels_delivered: list[Barrel]):
     red_ml = 0
     green_ml = 0
     blue_ml = 0
+    dark_ml = 0
 
     for barrel in barrels_delivered:
         cost += barrel.price * barrel.quantity
@@ -43,18 +41,20 @@ def post_deliver_barrels(barrels_delivered: list[Barrel]):
             green_ml += barrel.ml_per_barrel * barrel.quantity
         elif "BLUE" in barrel.sku:
             blue_ml += barrel.ml_per_barrel * barrel.quantity
+        elif "DARK" in barrel.sku:
+            dark_ml += barrel.ml_per_barrel * barrel.quantity
 
     with db.engine.begin() as connection:
-        result = connection.execute(sqlalchemy.text("SELECT * FROM global_inventory"))
-        row1 = result.first()
-
-        connection.execute(sqlalchemy.text("UPDATE global_inventory SET gold = :new_gold"), {"new_gold": row1.gold - cost})
-        connection.execute(sqlalchemy.text("UPDATE global_inventory SET num_red_ml = :new_red_ml, \
-                                                                        num_green_ml = :new_green_ml, \
-                                                                        num_blue_ml = :new_blue_ml"), \
-                                                                      {"new_red_ml": row1.num_red_ml + red_ml, \
-                                                                       "new_green_ml": row1.num_green_ml + green_ml, \
-                                                                       "new_blue_ml": row1.num_blue_ml + blue_ml})
+        connection.execute(sqlalchemy.text("UPDATE global_inventory SET gold = gold - :cost, \
+                                                                        num_red_ml = num_red_ml + :new_red_ml, \
+                                                                        num_green_ml = num_green_ml + :new_green_ml, \
+                                                                        num_blue_ml = num_blue_ml + :new_blue_ml, \
+                                                                        num_dark_ml = num_dark_ml + :new_dark_ml"), \
+                                                                      {"cost": cost, \
+                                                                       "new_red_ml": red_ml, \
+                                                                       "new_green_ml": green_ml, \
+                                                                       "new_blue_ml": blue_ml, \
+                                                                       "new_dark_ml": dark_ml})
 
     return "OK"
 
@@ -83,7 +83,7 @@ def get_wholesale_purchase_plan(wholesale_catalog: list[Barrel]):
     running_gold = row1.gold
 
     for barrel in wholesale_catalog:
-        if buy_color1 in barrel.sku and "SMALL" in barrel.sku and running_gold >= barrel.price:
+        if buy_color1 in barrel.sku and "MEDIUM" in barrel.sku and running_gold >= barrel.price:
             plan.append(
                         {
                             "sku": barrel.sku,
@@ -97,7 +97,7 @@ def get_wholesale_purchase_plan(wholesale_catalog: list[Barrel]):
     buy_color2 = buy_set2[2]
 
     for barrel in wholesale_catalog:
-        if buy_color2 in barrel.sku and "SMALL" in barrel.sku and running_gold >= barrel.price:
+        if buy_color2 in barrel.sku and "MEDIUM" in barrel.sku and running_gold >= barrel.price:
             plan.append(
                         {
                             "sku": barrel.sku,
@@ -111,7 +111,7 @@ def get_wholesale_purchase_plan(wholesale_catalog: list[Barrel]):
     buy_color3 = buy_set3[2]
 
     for barrel in wholesale_catalog:
-        if buy_color3 in barrel.sku and "SMALL" in barrel.sku and running_gold >= barrel.price:
+        if buy_color3 in barrel.sku and "MEDIUM" in barrel.sku and running_gold >= barrel.price:
             plan.append(
                         {
                             "sku": barrel.sku,
@@ -120,60 +120,3 @@ def get_wholesale_purchase_plan(wholesale_catalog: list[Barrel]):
             )
 
     return plan
-
-    """
-        if barrel.sku == "SMALL_RED_BARREL":
-                if ((row1.num_red_potions < 10) and (row1.gold >= barrel.price)):
-                    plan.append(
-                        {
-                            "sku": "SMALL_RED_BARREL",
-                            "quantity": 1,
-                        }
-                    )
-    -----
-
-    
-
-
-
-
-
-for barrel in wholesale_catalog:
-        if buy_color1 in barrel.sku and "SMALL" in barrel.sku and running_gold >= barrel.price:
-            plan.append(
-                        {
-                            "sku": barrel.sku,
-                            "quantity": 1,
-                        }
-            )
-            running_gold -= barrel.price
-
-    potions.remove(buy_set1)
-    buy_set2 = min(potions)
-    buy_color2 = buy_set2[2]
-
-    for barrel in wholesale_catalog:
-        if buy_color2 in barrel.sku and "SMALL" in barrel.sku and running_gold >= barrel.price:
-            plan.append(
-                        {
-                            "sku": barrel.sku,
-                            "quantity": 1,
-                        }
-            )
-            running_gold -= barrel.price
-
-    potions.remove(buy_set2)
-    buy_set3 = min(potions)
-    buy_color3 = buy_set3[2]
-
-    for barrel in wholesale_catalog:
-        if buy_color3 in barrel.sku and "SMALL" in barrel.sku and running_gold >= barrel.price:
-            plan.append(
-                        {
-                            "sku": barrel.sku,
-                            "quantity": 1,
-                        }
-            )
-
-    return plan
-"""
