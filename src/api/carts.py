@@ -70,7 +70,6 @@ class CartCheckout(BaseModel):
 @router.post("/{cart_id}/checkout")
 def checkout(cart_id: int, cart_checkout: CartCheckout):
     """ """
-    print(cart_checkout.payment)
 
     cost = 0
     num_reds = 0
@@ -78,12 +77,14 @@ def checkout(cart_id: int, cart_checkout: CartCheckout):
     num_blues = 0
 
     for potion_item in Carts[cart_id][1]:   # operates on the list of lists: items are [potion sku, quantity]
-        cost += potion_item[1] * 50  # everything costs 35
         if "RED" in potion_item[0]:
+            cost += potion_item[1] * 5
             num_reds += potion_item[1]
         elif "GREEN" in potion_item[0]:
+            cost += potion_item[1] * 50
             num_greens += potion_item[1]
         elif "BLUE" in potion_item[0]:
+            cost += potion_item[1] * 50
             num_blues += potion_item[1]
 
     with db.engine.begin() as connection:
