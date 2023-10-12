@@ -112,12 +112,12 @@ def get_wholesale_purchase_plan(wholesale_catalog: list[Barrel]):
 
     for barrel in wholesale_catalog:
         if buy_color2 in barrel.sku and size in barrel.sku:
-            quant = running_gold // barrel.price // 3 if running_gold // barrel.price >= 3 else running_gold // barrel.price
+            quant = running_gold // barrel.price // 2 if running_gold // barrel.price >= 2 else running_gold // barrel.price
             if running_gold >= barrel.price * quant:
                 plan.append(
                             {
                                 "sku": barrel.sku,
-                                "quantity": 1,
+                                "quantity": quant,
                             }
                 )
                 running_gold -= barrel.price * quant
@@ -128,12 +128,12 @@ def get_wholesale_purchase_plan(wholesale_catalog: list[Barrel]):
 
     for barrel in wholesale_catalog:
         if buy_color3 in barrel.sku and size in barrel.sku:
-            quant = running_gold // barrel.price // 3 if running_gold // barrel.price >= 3 else running_gold // barrel.price
+            quant = running_gold // barrel.price
             if running_gold >= barrel.price * quant:
                 plan.append(
                             {
                                 "sku": barrel.sku,
-                                "quantity": 1,
+                                "quantity": quant,
                             }
                 )
 
