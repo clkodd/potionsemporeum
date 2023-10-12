@@ -83,7 +83,7 @@ def get_wholesale_purchase_plan(wholesale_catalog: list[Barrel]):
     running_gold = row1.gold
 
     for barrel in wholesale_catalog:
-        if buy_color1 in barrel.sku and "MEDIUM" in barrel.sku and running_gold >= barrel.price:
+        if buy_color1 in barrel.sku and "LARGE" in barrel.sku and running_gold >= barrel.price:
             plan.append(
                         {
                             "sku": barrel.sku,
@@ -97,7 +97,7 @@ def get_wholesale_purchase_plan(wholesale_catalog: list[Barrel]):
     buy_color2 = buy_set2[2]
 
     for barrel in wholesale_catalog:
-        if buy_color2 in barrel.sku and "MEDIUM" in barrel.sku and running_gold >= barrel.price:
+        if buy_color2 in barrel.sku and "LARGE" in barrel.sku and running_gold >= barrel.price:
             plan.append(
                         {
                             "sku": barrel.sku,
@@ -111,7 +111,7 @@ def get_wholesale_purchase_plan(wholesale_catalog: list[Barrel]):
     buy_color3 = buy_set3[2]
 
     for barrel in wholesale_catalog:
-        if buy_color3 in barrel.sku and "MEDIUM" in barrel.sku and running_gold >= barrel.price:
+        if buy_color3 in barrel.sku and "LARGE" in barrel.sku and running_gold >= barrel.price:
             plan.append(
                         {
                             "sku": barrel.sku,
