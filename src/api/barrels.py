@@ -82,8 +82,10 @@ def get_wholesale_purchase_plan(wholesale_catalog: list[Barrel]):
 
     running_gold = row1.gold
 
+    size = "LARGE" if "LARGE" in wholesale_catalog[0].sku else "MEDIUM"
+
     for barrel in wholesale_catalog:
-        if buy_color1 in barrel.sku and "LARGE" in barrel.sku and running_gold >= barrel.price:
+        if "DARK" in barrel.sku and running_gold >= barrel.price:
             plan.append(
                         {
                             "sku": barrel.sku,
@@ -91,32 +93,48 @@ def get_wholesale_purchase_plan(wholesale_catalog: list[Barrel]):
                         }
             )
             running_gold -= barrel.price
+
+    for barrel in wholesale_catalog:
+        if buy_color1 in barrel.sku and size in barrel.sku:
+            quant = running_gold // barrel.price // 3 if running_gold // barrel.price >= 3 else running_gold // barrel.price
+            if running_gold >= barrel.price * quant:
+                plan.append(
+                            {
+                                "sku": barrel.sku,
+                                "quantity": quant,
+                            }
+                )
+                running_gold -= barrel.price * quant
 
     potions.remove(buy_set1)
     buy_set2 = min(potions)
     buy_color2 = buy_set2[2]
 
     for barrel in wholesale_catalog:
-        if buy_color2 in barrel.sku and "LARGE" in barrel.sku and running_gold >= barrel.price:
-            plan.append(
-                        {
-                            "sku": barrel.sku,
-                            "quantity": 1,
-                        }
-            )
-            running_gold -= barrel.price
+        if buy_color2 in barrel.sku and size in barrel.sku:
+            quant = running_gold // barrel.price // 3 if running_gold // barrel.price >= 3 else running_gold // barrel.price
+            if running_gold >= barrel.price * quant:
+                plan.append(
+                            {
+                                "sku": barrel.sku,
+                                "quantity": 1,
+                            }
+                )
+                running_gold -= barrel.price * quant
 
     potions.remove(buy_set2)
     buy_set3 = min(potions)
     buy_color3 = buy_set3[2]
 
     for barrel in wholesale_catalog:
-        if buy_color3 in barrel.sku and "LARGE" in barrel.sku and running_gold >= barrel.price:
-            plan.append(
-                        {
-                            "sku": barrel.sku,
-                            "quantity": 1,
-                        }
-            )
+        if buy_color3 in barrel.sku and size in barrel.sku:
+            quant = running_gold // barrel.price // 3 if running_gold // barrel.price >= 3 else running_gold // barrel.price
+            if running_gold >= barrel.price * quant:
+                plan.append(
+                            {
+                                "sku": barrel.sku,
+                                "quantity": 1,
+                            }
+                )
 
     return plan
