@@ -82,7 +82,14 @@ def get_wholesale_purchase_plan(wholesale_catalog: list[Barrel]):
 
     running_gold = row1.gold
 
-    size = "LARGE" if "LARGE" in wholesale_catalog[0].sku else "MEDIUM"
+    if "LARGE" in wholesale_catalog[0].sku:
+        size = "LARGE"
+    elif "MEDIUM" in wholesale_catalog[0].sku:
+        size = "MEDIUM"
+    else:
+        size = "SMALL"
+
+    #size = "LARGE" if "LARGE" in wholesale_catalog[0].sku else "MEDIUM"
 
     for barrel in wholesale_catalog:
         if "DARK" in barrel.sku and running_gold >= barrel.price:
