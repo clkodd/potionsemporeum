@@ -84,8 +84,10 @@ def get_wholesale_purchase_plan(wholesale_catalog: list[Barrel]):
     greens = [row1.green_ml, "GREEN"]
     blues = [row1.blue_ml, "BLUE"]
 
-    potions = [reds, greens, blues]
-    buy_set1 = min(potions)
+    #potions = [reds, greens, blues]
+    potions = [reds, blues, greens]
+    buy_set1 = potions[0]
+    #buy_set1 = min(potions)
     buy_color1 = buy_set1[1]
 
     running_gold = row1.gold
@@ -123,7 +125,8 @@ def get_wholesale_purchase_plan(wholesale_catalog: list[Barrel]):
                 running_gold -= barrel.price * quant
 
     potions.remove(buy_set1)
-    buy_set2 = min(potions)
+    #buy_set2 = min(potions)
+    buy_set2 = potions[0]
     buy_color2 = buy_set2[1]
 
     for barrel in wholesale_catalog:
@@ -140,7 +143,8 @@ def get_wholesale_purchase_plan(wholesale_catalog: list[Barrel]):
                 running_gold -= barrel.price * quant
 
     potions.remove(buy_set2)
-    buy_set3 = min(potions)
+    #buy_set3 = min(potions)
+    buy_set3 = potions[0]
     buy_color3 = buy_set3[1]
 
     for barrel in wholesale_catalog:
