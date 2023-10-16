@@ -69,6 +69,8 @@ def set_item_quantity(cart_id: int, item_sku: str, cart_item: CartItem):
                                             WHERE sku = :given_sku
                                             """),
                                            {"given_sku": item_sku})
+        
+        potion = table_potion_id.first()
 
         connection.execute(
             sqlalchemy.text("""
@@ -76,7 +78,7 @@ def set_item_quantity(cart_id: int, item_sku: str, cart_item: CartItem):
                             VALUES (:given_cart, :potion_id, :quantity)
                             """),
                             {"given_cart": cart_id,
-                            "potion_id": table_potion_id.potion_id,
+                            "potion_id": potion.potion_id,
                             "quantity": cart_item.quantity})
     
     return "OK"
