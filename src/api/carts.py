@@ -13,8 +13,8 @@ router = APIRouter(
 
 
 # CartID : [ Customer, [[potion_sku, quantity], [potion_sku, quantity], ...] ]
-Carts = {}
-cartIDBase = 0
+# Carts = {}
+# cartIDBase = 0
 
 
 class NewCart(BaseModel):
@@ -24,11 +24,30 @@ class NewCart(BaseModel):
 @router.post("/")
 def create_cart(new_cart: NewCart):
     """ """
-    global cartIDBase
-    cartIDBase = cartIDBase + 1
-    Carts[cartIDBase] = [new_cart.customer, []]
 
-    return {"cart_id": cartIDBase}
+    with db.engine.begin() as connection:
+        connection.execute(
+            sqlalchemy.text("""
+                            INSERT INTO carts (customer)
+                            VALUES (:customer_str)
+                            """),
+                           {"customer_str": new_cart.customer})
+
+        new_item = connection.execute(
+                        sqlalchemy.text("""
+                                        SELECT cart_id
+                                        FROM carts
+                                        WHERE customer = :customer_str)
+                                        """),
+                                       {"customer_str": new_cart.customer})
+
+    return {new_item.cart_id}
+
+    # global cartIDBase
+    # cartIDBase = cartIDBase + 1
+    # Carts[cartIDBase] = [new_cart.customer, []]
+
+    # return {"cart_id": cartIDBase}
 
 
 @router.get("/{cart_id}")
