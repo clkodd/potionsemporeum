@@ -62,40 +62,28 @@ def set_item_quantity(cart_id: int, item_sku: str, cart_item: CartItem):
     """ """
 
     with db.engine.begin() as connection:
-        table_potion_id = connection.execute(
-                            sqlalchemy.text("""
-                                            SELECT potion_id
-                                            FROM potion_mixes
-                                            WHERE sku = :given_sku
-                                            """),
-                                           {"given_sku": item_sku})
+    #     table_potion_id = connection.execute(
+    #                         sqlalchemy.text("""
+    #                                         SELECT potion_id
+    #                                         FROM potion_mixes
+    #                                         WHERE sku = :given_sku
+    #                                         """),
+    #                                        {"given_sku": item_sku})
         
-        potion = table_potion_id.first()
+    #     potion = table_potion_id.first()
 
         connection.execute(
             sqlalchemy.text("""
                             INSERT INTO cart_items (cart_id, potion_id, quantity)
-                            VALUES (:given_cart, :potion_id, :quantity)
+                            SELECT :given_cart, :quantity, potion_mixes.potion_id
+                            FROM potion_mixes
+                            WHERE potion_mixes.sku = :item_sku
                             """),
                             {"given_cart": cart_id,
-                            "potion_id": potion.potion_id,
-                            "quantity": cart_item.quantity})
+                            "quantity": cart_item.quantity,
+                            "item_sku": item_sku})
     
     return "OK"
-
-
-
-    # curr_items = Carts[cart_id][1]
-
-    # for pair in curr_items:
-    #     if item_sku in pair:
-    #         pair[1] += cart_item.quantity
-    # else:
-    #     curr_items.append([item_sku, cart_item.quantity])
-
-    # Carts[cart_id] = [Carts[cart_id][0], curr_items]
-
-    # return "OK"
 
 
 class CartCheckout(BaseModel):
@@ -108,19 +96,32 @@ def checkout(cart_id: int, cart_checkout: CartCheckout):
 
     cost = 0
 
-    for potion_item in Carts[cart_id][1]:   # operates on the list of lists: items are [potion sku, quantity]
-        if "RED" in potion_item[0]:
-            cost += potion_item[1] * 50
-            num_reds += potion_item[1]
-        elif "GREEN" in potion_item[0]:
-            cost += potion_item[1] * 50
-            num_greens += potion_item[1]
-        elif "BLUE" in potion_item[0]:
-            cost += potion_item[1] * 50
-            num_blues += potion_item[1]
-        elif "PURPLE" in potion_item[0]:
-            cost += potion_item[1] * 50
-            num_purples += potion_item[1]
+    with db.engine.begin() as connection:
+        cart = connection.execute(
+                    sqlalchemy.text("""
+                                    SELECT *
+                                    FROM cart_items
+                                    WHERE cart_id = :given_cart_id
+                                    """),
+                                    {"given_cart_id": cart_id})
+
+    for potion in cart:
+        return 0
+
+
+    # for potion_item in Carts[cart_id][1]:
+    #     if "RED" in potion_item[0]:
+    #         cost += potion_item[1] * 50
+    #         num_reds += potion_item[1]
+    #     elif "GREEN" in potion_item[0]:
+    #         cost += potion_item[1] * 50
+    #         num_greens += potion_item[1]
+    #     elif "BLUE" in potion_item[0]:
+    #         cost += potion_item[1] * 50
+    #         num_blues += potion_item[1]
+    #     elif "PURPLE" in potion_item[0]:
+    #         cost += potion_item[1] * 50
+    #         num_purples += potion_item[1]
     
     with db.engine.begin() as connection:
 

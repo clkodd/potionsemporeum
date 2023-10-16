@@ -26,6 +26,7 @@ def get_inventory():
         total_potions = 0
         for row in potions:
             total_potions += row.quantity
+            
         mls = row1.red_ml + row1.blue_ml + row1.green_ml + row1.dark_ml
         
         return {"number_of_potions": total_potions, "ml_in_barrels": mls, "gold": row1.gold}
