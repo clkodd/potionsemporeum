@@ -46,8 +46,8 @@ def get_cart(cart_id: int):
                                    {"given_id": cart_id})
 
     return {
-        "cart_id": cart.first().cart_id,
-        "customer": cart.first().customer
+        "cart_id": cart.cart_id,
+        "customer": cart.customer
     }
 
 
@@ -60,14 +60,22 @@ def set_item_quantity(cart_id: int, item_sku: str, cart_item: CartItem):
     """ """
 
     with db.engine.begin() as connection:
-        new_row = connection.execute(
-                    sqlalchemy.text("""
-                                    INSERT INTO cart_items (cart_id, potion_id, quantity)
-                                    VALUES (:cart_id, :potion_id, :quantity)
-                                    """),
-                                   {"customer_str": new_cart.customer,
-                                    "potion_id": kj,
-                                    "quantity": cart_item.quantity})
+        table_potion_id = connection.execute(
+                            sqlalchemy.text("""
+                                            SELECT potion_id
+                                            FROM potion_mixes
+                                            WHERE sku = :given_sku
+                                            """),
+                                           {"given_sku": item_sku})
+
+        connection.execute(
+            sqlalchemy.text("""
+                            INSERT INTO cart_items (cart_id, potion_id, quantity)
+                            VALUES (:given_cart, :potion_id, :quantity)
+                            """),
+                            {"given_cart": cart_id,
+                            "potion_id": table_potion_id.potion_id,
+                            "quantity": cart_item.quantity})
     
     return "OK"
 
