@@ -93,38 +93,38 @@ def get_bottle_plan():
             )
             curr_red_ml -= quant * 50
             curr_blue_ml -= quant * 50
-        else:
-            if curr_red_ml >= 100:
-                temp_red = curr_red_ml - 50 # save for purp
-                quant = temp_red // 100
-                plan.append(
-                    {
-                        "potion_type": [100, 0, 0, 0],
-                        "quantity": quant,
-                    }
-                )
-                curr_red_ml -= quant * 100
+        
+        if curr_red_ml >= 100:
+            temp_red = curr_red_ml - 50 # save for purp
+            quant = temp_red // 100
+            plan.append(
+                {
+                    "potion_type": [100, 0, 0, 0],
+                    "quantity": quant,
+                }
+            )
+            curr_red_ml -= quant * 100
 
-            if curr_green_ml >= 100:
-                quant = curr_green_ml // 100
-                plan.append(
-                    {
-                        "potion_type": [0, 100, 0, 0],
-                        "quantity": quant,
-                    }
-                )
-                curr_green_ml -= quant * 100
+        if curr_green_ml >= 100:
+            quant = curr_green_ml // 100
+            plan.append(
+                {
+                    "potion_type": [0, 100, 0, 0],
+                    "quantity": quant,
+                }
+            )
+            curr_green_ml -= quant * 100
 
-            if curr_blue_ml >= 100:
-                temp_blue = curr_blue_ml - 50 # save for purp
-                quant = temp_blue // 100
-                plan.append(
-                    {
-                        "potion_type": [0, 0, 100, 0],
-                        "quantity": quant,
-                    }
-                )
-                curr_blue_ml -= quant * 100
+        if curr_blue_ml >= 100:
+            temp_blue = curr_blue_ml - 50 # save for purp
+            quant = temp_blue // 100
+            plan.append(
+                {
+                    "potion_type": [0, 0, 100, 0],
+                    "quantity": quant,
+                }
+            )
+            curr_blue_ml -= quant * 100
 
         return plan
 
