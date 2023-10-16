@@ -45,9 +45,11 @@ def get_cart(cart_id: int):
                                     """),
                                    {"given_id": cart_id})
 
+        row = cart.first()
+
     return {
-        "cart_id": cart.cart_id,
-        "customer": cart.customer
+        "cart_id": row.cart_id,
+        "customer": row.customer
     }
 
 
