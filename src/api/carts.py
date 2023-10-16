@@ -30,10 +30,11 @@ def create_cart(new_cart: NewCart):
                     sqlalchemy.text("""
                                     INSERT INTO carts (customer)
                                     VALUES (:customer_str)
+                                    RETURNING cart_id
                                     """),
                                    {"customer_str": new_cart.customer})
 
-    return {new_row.inserted_primary_key}
+    return {"cart_id": new_row.scalar()}
 
     # global cartIDBase
     # cartIDBase = cartIDBase + 1
@@ -68,17 +69,32 @@ class CartItem(BaseModel):
 @router.post("/{cart_id}/items/{item_sku}")
 def set_item_quantity(cart_id: int, item_sku: str, cart_item: CartItem):
     """ """
-    curr_items = Carts[cart_id][1]
 
-    for pair in curr_items:
-        if item_sku in pair:
-            pair[1] += cart_item.quantity
-    else:
-        curr_items.append([item_sku, cart_item.quantity])
-
-    Carts[cart_id] = [Carts[cart_id][0], curr_items]
-
+    with db.engine.begin() as connection:
+        new_row = connection.execute(
+                    sqlalchemy.text("""
+                                    INSERT INTO cart_items (cart_id, potion_id, quantity)
+                                    VALUES (:cart_id, :potion_id, :quantity)
+                                    """),
+                                   {"customer_str": new_cart.customer,
+                                    "potion_id": kj,
+                                    "quantity": cart_item.quantity})
+    
     return "OK"
+
+
+
+    # curr_items = Carts[cart_id][1]
+
+    # for pair in curr_items:
+    #     if item_sku in pair:
+    #         pair[1] += cart_item.quantity
+    # else:
+    #     curr_items.append([item_sku, cart_item.quantity])
+
+    # Carts[cart_id] = [Carts[cart_id][0], curr_items]
+
+    # return "OK"
 
 
 class CartCheckout(BaseModel):
