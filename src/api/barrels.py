@@ -57,7 +57,7 @@ def post_deliver_barrels(barrels_delivered: list[Barrel]):
                            {"cost": cost,
                             "new_red_ml": new_red_ml,
                             "new_green_ml": new_green_ml,
-                            "new_blue_ml": new_lue_ml,
+                            "new_blue_ml": new_blue_ml,
                             "new_dark_ml": new_dark_ml})
 
     return "OK"
