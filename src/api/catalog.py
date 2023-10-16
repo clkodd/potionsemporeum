@@ -23,11 +23,13 @@ def get_catalog():
 
     catalog = []
 
-    if len(potions) > 6:    # sell the 6 potions with the most quantity
-        sorted_potions = sorted(potions, key = lambda row: row.quantity)
-        top_six = sorted_potions[:6]
-    else:
-        top_six = potions
+    # if len(potions) > 6:    # sell the 6 potions with the most quantity
+    #     sorted_potions = sorted(potions, key = lambda row: row.quantity)
+    #     top_six = sorted_potions[:6]
+    # else:
+    #     top_six = potions
+
+    top_six = potions
 
     for row in top_six:
         catalog.append(

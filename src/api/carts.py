@@ -12,11 +12,6 @@ router = APIRouter(
 )
 
 
-# CartID : [ Customer, [[potion_sku, quantity], [potion_sku, quantity], ...] ]
-# Carts = {}
-# cartIDBase = 0
-
-
 class NewCart(BaseModel):
     customer: str
 
@@ -36,12 +31,6 @@ def create_cart(new_cart: NewCart):
 
     return {"cart_id": new_row.scalar()}
 
-    # global cartIDBase
-    # cartIDBase = cartIDBase + 1
-    # Carts[cartIDBase] = [new_cart.customer, []]
-
-    # return {"cart_id": cartIDBase}
-
 
 @router.get("/{cart_id}")
 def get_cart(cart_id: int):
@@ -57,8 +46,8 @@ def get_cart(cart_id: int):
                                    {"given_id": cart_id})
 
     return {
-        "cart_id": cart.cart_id,
-        "customer": cart_customer
+        "cart_id": cart.first().cart_id,
+        "customer": cart.first().customer
     }
 
 
