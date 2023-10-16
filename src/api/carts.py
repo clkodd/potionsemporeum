@@ -13,8 +13,8 @@ router = APIRouter(
 
 
 # CartID : [ Customer, [[potion_sku, quantity], [potion_sku, quantity], ...] ]
-# Carts = {}
-# cartIDBase = 0
+Carts = {}
+cartIDBase = 0
 
 
 class NewCart(BaseModel):

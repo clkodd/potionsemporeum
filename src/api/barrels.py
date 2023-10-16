@@ -100,7 +100,7 @@ def get_wholesale_purchase_plan(wholesale_catalog: list[Barrel]):
     # for barrel in wholesale_catalog:
     #     if "DARK" in barrel.sku:
     #         quant = running_gold // barrel.price if barrel.quantity >= (running_gold // barrel.price) else barrel.quantity
-    #         if running_gold >= barrel.price * quant:
+    #         if running_gold >= barrel.price * quant and quant > 0:
     #             plan.append(
     #                         {
     #                             "sku": barrel.sku,
@@ -113,7 +113,7 @@ def get_wholesale_purchase_plan(wholesale_catalog: list[Barrel]):
         if buy_color1 in barrel.sku and size in barrel.sku:
             quant = running_gold // barrel.price // 3 if running_gold // barrel.price >= 3 else running_gold // barrel.price
             quant = quant if barrel.quantity >= quant else barrel.quantity
-            if running_gold >= barrel.price * quant:
+            if running_gold >= barrel.price * quant and quant > 0:
                 plan.append(
                             {
                                 "sku": barrel.sku,
@@ -130,7 +130,7 @@ def get_wholesale_purchase_plan(wholesale_catalog: list[Barrel]):
         if buy_color2 in barrel.sku and size in barrel.sku:
             quant = running_gold // barrel.price // 2 if running_gold // barrel.price >= 2 else running_gold // barrel.price
             quant = quant if barrel.quantity >= quant else barrel.quantity
-            if running_gold >= barrel.price * quant:
+            if running_gold >= barrel.price * quant and quant > 0:
                 plan.append(
                             {
                                 "sku": barrel.sku,
@@ -147,7 +147,7 @@ def get_wholesale_purchase_plan(wholesale_catalog: list[Barrel]):
         if buy_color3 in barrel.sku and size in barrel.sku:
             quant = running_gold // barrel.price
             quant = quant if barrel.quantity >= quant else barrel.quantity
-            if running_gold >= barrel.price * quant:
+            if running_gold >= barrel.price * quant and quant > 0:
                 plan.append(
                             {
                                 "sku": barrel.sku,
