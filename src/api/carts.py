@@ -26,23 +26,14 @@ def create_cart(new_cart: NewCart):
     """ """
 
     with db.engine.begin() as connection:
-        connection.execute(
-            sqlalchemy.text("""
-                            INSERT INTO carts (customer)
-                            VALUES (:customer_str)
-                            """),
-                           {"customer_str": new_cart.customer})
+        new_row = connection.execute(
+                    sqlalchemy.text("""
+                                    INSERT INTO carts (customer)
+                                    VALUES (:customer_str)
+                                    """),
+                                   {"customer_str": new_cart.customer})
 
-        # new_item = connection.execute(
-        #                 sqlalchemy.text("""
-        #                                 SELECT cart_id
-        #                                 FROM carts
-        #                                 WHERE customer = :customer_str)
-        #                                 """),
-        #                                {"customer_str": new_cart.customer})
-
-    #return {new_item.cart_id}
-    return 1
+    return {new_row.cart_id}
 
     # global cartIDBase
     # cartIDBase = cartIDBase + 1
