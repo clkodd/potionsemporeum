@@ -33,9 +33,7 @@ def create_cart(new_cart: NewCart):
                                     """),
                                    {"customer_str": new_cart.customer})
 
-        cart = new_row.first()
-
-    return {cart.cart_id}
+    return {cart.inserted_primary_key}
 
     # global cartIDBase
     # cartIDBase = cartIDBase + 1
@@ -47,12 +45,19 @@ def create_cart(new_cart: NewCart):
 @router.get("/{cart_id}")
 def get_cart(cart_id: int):
     """ """
-    curr_cart = Carts[cart_id]
+
+    with db.engine.begin() as connection:
+        cart = connection.execute(
+                    sqlalchemy.text("""
+                                    SELECT * 
+                                    FROM carts
+                                    WHERE cart_id = :given_id
+                                    """),
+                                   {"given_id": cart_id})
 
     return {
-        "cart_id": cart_id,
-        "customer": curr_cart[0],
-        "cart": curr_cart[1]
+        "cart_id": cart.cart_id,
+        "customer": cart_customer
     }
 
 
