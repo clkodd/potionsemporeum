@@ -14,11 +14,31 @@ def get_catalog():
     """
 
     with db.engine.begin() as connection:
-        result = connection.execute(sqlalchemy.text("SELECT * FROM global_inventory"))
-        row1 = result.first()
+        # result = connection.execute(sqlalchemy.text("SELECT * FROM global_inventory"))
+        # row1 = result.first()
+        potions = connection.execute(
+                    sqlalchemy.text("""
+                                    SELECT sku, name, formula, price, quantity 
+                                    FROM potion_mixes 
+                                    WHERE quantity > 0
+                                    """))
 
     catalog = []
-    
+
+    for row in potions:
+        catalog.append(
+            {
+                "sku": row.sku,
+                "name": row.name,
+                "quantity": row.quantity,
+                "price": row.price,
+                "potion_type": row.formula
+            }
+        )
+
+    return catalog
+
+    """
     if row1.num_red_potions > 0:
         catalog.append(
                 {
@@ -50,3 +70,4 @@ def get_catalog():
                 }
         )
     return catalog
+"""

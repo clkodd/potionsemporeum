@@ -13,8 +13,8 @@ router = APIRouter(
 
 
 # CartID : [ Customer, [[potion_sku, quantity], [potion_sku, quantity], ...] ]
-Carts = {}
-cartIDBase = 0
+# Carts = {}
+# cartIDBase = 0
 
 
 class NewCart(BaseModel):
@@ -72,9 +72,6 @@ def checkout(cart_id: int, cart_checkout: CartCheckout):
     """ """
 
     cost = 0
-    num_reds = 0
-    num_greens = 0
-    num_blues = 0
 
     for potion_item in Carts[cart_id][1]:   # operates on the list of lists: items are [potion sku, quantity]
         if "RED" in potion_item[0]:
@@ -86,18 +83,30 @@ def checkout(cart_id: int, cart_checkout: CartCheckout):
         elif "BLUE" in potion_item[0]:
             cost += potion_item[1] * 50
             num_blues += potion_item[1]
-
+        elif "PURPLE" in potion_item[0]:
+            cost += potion_item[1] * 50
+            num_purples += potion_item[1]
+    
     with db.engine.begin() as connection:
-        connection.execute(sqlalchemy.text("UPDATE global_inventory SET gold = gold + :cost, \
-                                                                        num_red_potions = num_red_potions - :new_red_potions, \
-                                                                        num_green_potions = num_green_potions - :new_green_potions, \
-                                                                        num_blue_potions = num_blue_potions - :new_blue_potions"), \
-                                                                      {"cost": cost, \
-                                                                       "new_red_potions": num_reds, \
-                                                                       "new_green_potions": num_greens, \
-                                                                       "new_blue_potions": num_blues})
+
+        for potion_item in Carts[cart_id][1]:
+            connection.execute(
+                sqlalchemy.text("""
+                                UPDATE potion_mixes 
+                                SET quantity = quantity + :num_bought
+                                WHERE sku = :sku
+                                """),
+                                {"num_bought": potion_item[1], 
+                                "sku": potion_item[0]})
+
+        connection.execute(
+            sqlalchemy.text("""
+                            UPDATE global_inventory 
+                            SET gold = gold + :cost
+                            """),
+                           {"cost": cost})
     
     del Carts[cart_id]
 
-    print("REDS sold: " + str(num_reds) + "\n GREENS sold: " + str(num_greens) + "\n BLUES sold: " + str(num_blues))
-    return {"total_potions_bought": num_reds + num_greens + num_blues, "total_gold_paid": cost}
+    print("REDS sold: " + str(num_reds) + "\n GREENS sold: " + str(num_greens) + "\n BLUES sold: " + str(num_blues) + "\n PURPLES sold: " + str(num_purples))
+    return {"total_potions_bought": num_reds + num_greens + num_blues + num_purples, "total_gold_paid": cost}
