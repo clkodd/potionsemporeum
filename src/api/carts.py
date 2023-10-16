@@ -33,7 +33,7 @@ def create_cart(new_cart: NewCart):
                                     """),
                                    {"customer_str": new_cart.customer})
 
-    return {cart.inserted_primary_key}
+    return {new_row.inserted_primary_key}
 
     # global cartIDBase
     # cartIDBase = cartIDBase + 1
