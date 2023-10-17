@@ -102,7 +102,7 @@ def checkout(cart_id: int, cart_checkout: CartCheckout):
             cost += row.price * row.quantity
             total_potions += row.quantity
 
-            print("\ncart id: {} / item sku: {} / quantity: {}\n".format(cart_id, row.sku, row.quantity))
+            print("cart id: {} / item sku: {} / quantity: {}".format(cart_id, row.sku, row.quantity))
 
             connection.execute(
                     sqlalchemy.text("""
@@ -120,44 +120,6 @@ def checkout(cart_id: int, cart_checkout: CartCheckout):
                             """),
                            {"cost": cost})
 
-        print("\ncart id:{} / cost: {}\n".format(cart_id, cost))
+        print("cart id: {} / cost: {}\n".format(cart_id, cost))
 
     return {"total_potions_bought": total_potions, "total_gold_paid": cost}
-
-    #         cost += row.quantity * 
-    #         connection.execute(
-    #             sqlalchemy.text("""
-    #                             SELECT *
-    #                             FROM cart_items
-    #                             WHERE cart_id = :given_cart_id
-    #                             """),
-    #                             {"given_cart_id": cart_id})
-
-
-    # for row in cart:
-    #     if "RED" in row.:
-    #         cost += potion_item[1] * 50
-    #         num_reds += potion_item[1]
-    #     elif "GREEN" in potion_item[0]:
-    #         cost += potion_item[1] * 50
-    #         num_greens += potion_item[1]
-    #     elif "BLUE" in potion_item[0]:
-    #         cost += potion_item[1] * 50
-    #         num_blues += potion_item[1]
-    #     elif "PURPLE" in potion_item[0]:
-    #         cost += potion_item[1] * 50
-    #         num_purples += potion_item[1]
-    
-    # with db.engine.begin() as connection:
-
-    #     for potion_item in Carts[cart_id][1]:
-    #         connection.execute(
-    #             sqlalchemy.text("""
-    #                             UPDATE potion_mixes 
-    #                             SET quantity = quantity + :num_bought
-    #                             WHERE sku = :sku
-    #                             """),
-    #                             {"num_bought": potion_item[1], 
-    #                             "sku": potion_item[0]})
-
-    
