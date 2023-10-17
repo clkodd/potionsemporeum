@@ -19,6 +19,7 @@ def get_catalog():
                                     SELECT sku, name, formula, price, quantity 
                                     FROM potion_mixes 
                                     WHERE quantity > 0
+                                    ORDER BY quantity DESC
                                     """))
 
     catalog = []
