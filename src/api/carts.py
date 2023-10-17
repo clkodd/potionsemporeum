@@ -90,7 +90,7 @@ def checkout(cart_id: int, cart_checkout: CartCheckout):
     with db.engine.begin() as connection:
         cart = connection.execute(
                     sqlalchemy.text("""
-                                    SELECT cart_items.*, potion_mixes.potion_id, potion_mixes.price 
+                                    SELECT cart_items.*, potion_mixes.potion_id, potion_mixes.price, potion_mixes.sku
                                     FROM cart_items
                                     JOIN potion_mixes
                                     ON cart_items.potion_id = potion_mixes.potion_id
