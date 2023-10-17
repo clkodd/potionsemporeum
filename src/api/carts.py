@@ -92,7 +92,7 @@ def checkout(cart_id: int, cart_checkout: CartCheckout):
                     sqlalchemy.text("""
                                     SELECT *
                                     FROM cart_items
-                                    WHERE cart_id = :given_cart_id
+                                    WHERE cart_items.cart_id = :given_cart_id
                                     JOIN potion_mixes
                                     ON cart_items.potion_id = potion_mixes.potion_id
                                     """),
@@ -121,7 +121,7 @@ def checkout(cart_id: int, cart_checkout: CartCheckout):
                            {"cost": cost})
 
         print("\ncart id:{} / cost: {}\n".format(cart_id, cost))
-        
+
     return {"total_potions_bought": total_potions, "total_gold_paid": cost}
 
     #         cost += row.quantity * 
