@@ -21,17 +21,6 @@ def get_inventory():
 
         result = connection.execute(sqlalchemy.text("SELECT * FROM global_inventory"))
         potions = connection.execute(sqlalchemy.text("SELECT quantity FROM potion_mixes"))
-        test = connection.execute(
-                    sqlalchemy.text("""
-                                    SELECT sku, name, formula, price, quantity 
-                                    FROM potion_mixes 
-                                    """))
-
-        queries = []
-        for row in test:
-            queries.append(row)
-        print(queries)
-
         row1 = result.first()
         
         total_potions = 0
