@@ -25,12 +25,9 @@ def get_inventory():
                     sqlalchemy.text("""
                                     SELECT sku, name, formula, price, quantity 
                                     FROM potion_mixes 
-                                    WHERE quantity > 0
-                                    ORDER BY quantity DESC
                                     """))
 
         queries = []
-        print(test)
         for row in test:
             queries.append(row)
         print(queries)
