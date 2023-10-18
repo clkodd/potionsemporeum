@@ -32,7 +32,6 @@ def get_inventory():
             queries.append(row)
         print(queries)
 
-
         row1 = result.first()
         
         total_potions = 0
