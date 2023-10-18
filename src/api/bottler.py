@@ -74,65 +74,91 @@ def get_bottle_plan():
                                         """))
 
         row1 = ml_inventory.first()
-
-        queries = [row[0] for row in formulas]
-        print(queries)
+        formula_list = [row[0] for row in formulas]
         
-        curr_red_ml = row1.red_ml
-        curr_green_ml = row1.green_ml
-        curr_blue_ml = row1.blue_ml
-        curr_dark_ml = row1.dark_ml
+        # curr_red_ml = row1.red_ml
+        # curr_green_ml = row1.green_ml
+        # curr_blue_ml = row1.blue_ml
+        # curr_dark_ml = row1.dark_ml
 
-        mls = [curr_red_ml, curr_green_ml, curr_blue_ml, curr_dark_ml]
+        #curr_mls = [curr_red_ml, curr_green_ml, curr_blue_ml, curr_dark_ml]
+        curr_mls = [row1.red_ml, row1.green_ml, row1.blue_ml, row1.dark_ml]
+        intermediate_plan = {}
 
-        plan = []
-
-        if curr_red_ml >= 50 and curr_blue_ml >= 50:
-            quant = min(curr_red_ml // 50, curr_blue_ml // 50)
-            if quant > 0:
-                plan.append(
-                    {
-                        "potion_type": [50, 0, 50, 0],
-                        "quantity": quant
-                    }
-                )
-                curr_red_ml -= quant * 50
-                curr_blue_ml -= quant * 50
+        potion_added = True
+        while potion_added:
+            potion_added = False
+            for formula in formula_list:
+                make = True
+                for i in range(4):
+                    if curr_mls[i] < formula[i]:
+                        make = False
+                if make:
+                    if str(formula) in intermediate_plan:
+                        intermediate_plan[str(formula)] += 1
+                    else:
+                        intermediate_plan[str(formula)] = 1
+                    for i in range(4):
+                        curr_mls[i] -= formula[i]
+                    potion_added = True
         
-        if curr_red_ml >= 100:
-            quant = curr_red_ml // 100
-            if quant > 0:
-                plan.append(
-                    {
-                        "potion_type": [100, 0, 0, 0],
-                        "quantity": quant,
-                    }
-                )
-                curr_red_ml -= quant * 100
+        for formula in intermediate_plan.keys():
+            plan.append(
+                {
+                    "potion_type": eval(formula),
+                    "quantity": intermediate_plan[formula]
+                }
+            )
 
-        if curr_green_ml >= 100:
-            quant = curr_green_ml // 100
-            if quant > 0:
-                plan.append(
-                    {
-                        "potion_type": [0, 100, 0, 0],
-                        "quantity": quant,
-                    }
-                )
-                curr_green_ml -= quant * 100
-
-        if curr_blue_ml >= 100:
-            quant = curr_blue_ml // 100
-            if quant > 0:
-                plan.append(
-                    {
-                        "potion_type": [0, 0, 100, 0],
-                        "quantity": quant,
-                    }
-                )
-                curr_blue_ml -= quant * 100
-
+        print(plan)
         return plan
+
+        # if curr_red_ml >= 50 and curr_blue_ml >= 50:
+        #     quant = min(curr_red_ml // 50, curr_blue_ml // 50)
+        #     if quant > 0:
+        #         plan.append(
+        #             {
+        #                 "potion_type": [50, 0, 50, 0],
+        #                 "quantity": quant
+        #             }
+        #         )
+        #         curr_red_ml -= quant * 50
+        #         curr_blue_ml -= quant * 50
+        
+        # if curr_red_ml >= 100:
+        #     quant = curr_red_ml // 100
+        #     if quant > 0:
+        #         plan.append(
+        #             {
+        #                 "potion_type": [100, 0, 0, 0],
+        #                 "quantity": quant,
+        #             }
+        #         )
+        #         curr_red_ml -= quant * 100
+
+        # if curr_green_ml >= 100:
+        #     quant = curr_green_ml // 100
+        #     if quant > 0:
+        #         plan.append(
+        #             {
+        #                 "potion_type": [0, 100, 0, 0],
+        #                 "quantity": quant,
+        #             }
+        #         )
+        #         curr_green_ml -= quant * 100
+
+        # if curr_blue_ml >= 100:
+        #     quant = curr_blue_ml // 100
+        #     if quant > 0:
+        #         plan.append(
+        #             {
+        #                 "potion_type": [0, 0, 100, 0],
+        #                 "quantity": quant,
+        #             }
+        #         )
+        #         curr_blue_ml -= quant * 100
+
+        # return plan
 
         # at_least_one = True
 
@@ -153,36 +179,3 @@ def get_bottle_plan():
         #             at_least_one = True
 
         # return plan
-        
-
-"""
-
-#while 
-            #for mix in formulas:
-
-
-
-    if row1.num_red_ml >= 100:
-        plan.append(
-            {
-                "potion_type": [100, 0, 0, 0],
-                "quantity": row1.num_red_ml // 100,
-            }
-        )
-    if row1.num_green_ml >= 100:
-        plan.append(
-            {
-                "potion_type": [0, 100, 0, 0],
-                "quantity": row1.num_green_ml // 100,
-            }
-        )
-    if row1.num_blue_ml >= 100:
-        plan.append(
-            {
-                "potion_type": [0, 0, 100, 0],
-                "quantity": row1.num_blue_ml // 100,
-            }
-        )
-
-    return plan
-    """
