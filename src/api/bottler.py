@@ -68,16 +68,22 @@ def get_bottle_plan():
 
         formulas = connection.execute(
                         sqlalchemy.text("""
-                                        SELECT formula 
+                                        SELECT formula, quantity 
                                         FROM potion_mixes
+                                        ORDER BY quantity DESC
                                         """))
 
         row1 = ml_inventory.first()
 
+        queries = [row[0] for row in formulas]
+        print(queries)
+        
         curr_red_ml = row1.red_ml
         curr_green_ml = row1.green_ml
         curr_blue_ml = row1.blue_ml
         curr_dark_ml = row1.dark_ml
+
+        mls = [curr_red_ml, curr_green_ml, curr_blue_ml, curr_dark_ml]
 
         plan = []
 
