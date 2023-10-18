@@ -102,8 +102,6 @@ def checkout(cart_id: int, cart_checkout: CartCheckout):
             cost += row.price * row.quantity
             total_potions += row.quantity
 
-            print("cart id: {} / item sku: {} / quantity: {}".format(cart_id, row.sku, row.quantity))
-
             connection.execute(
                     sqlalchemy.text("""
                                     UPDATE potion_mixes
@@ -119,7 +117,5 @@ def checkout(cart_id: int, cart_checkout: CartCheckout):
                             SET gold = gold + :cost
                             """),
                            {"cost": cost})
-
-        print("cart id: {} / cost: {}\n".format(cart_id, cost))
 
     return {"total_potions_bought": total_potions, "total_gold_paid": cost}

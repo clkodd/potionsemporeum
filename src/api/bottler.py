@@ -79,52 +79,52 @@ def get_bottle_plan():
         curr_blue_ml = row1.blue_ml
         curr_dark_ml = row1.dark_ml
 
-        # curr_mls = [curr_red_ml, curr_green_ml, curr_blue_ml, curr_dark_ml]
-
         plan = []
 
         if curr_red_ml >= 50 and curr_blue_ml >= 50:
             quant = min(curr_red_ml // 50, curr_blue_ml // 50)
-            plan.append(
-                {
-                    "potion_type": [50, 0, 50, 0],
-                    "quantity": quant
-                }
-            )
-            curr_red_ml -= quant * 50
-            curr_blue_ml -= quant * 50
+            if quant > 0:
+                plan.append(
+                    {
+                        "potion_type": [50, 0, 50, 0],
+                        "quantity": quant
+                    }
+                )
+                curr_red_ml -= quant * 50
+                curr_blue_ml -= quant * 50
         
         if curr_red_ml >= 100:
-            temp_red = curr_red_ml - 50 # save for purp
-            quant = temp_red // 100
-            plan.append(
-                {
-                    "potion_type": [100, 0, 0, 0],
-                    "quantity": quant,
-                }
-            )
-            curr_red_ml -= quant * 100
+            quant = curr_red_ml // 100
+            if quant > 0:
+                plan.append(
+                    {
+                        "potion_type": [100, 0, 0, 0],
+                        "quantity": quant,
+                    }
+                )
+                curr_red_ml -= quant * 100
 
         if curr_green_ml >= 100:
             quant = curr_green_ml // 100
-            plan.append(
-                {
-                    "potion_type": [0, 100, 0, 0],
-                    "quantity": quant,
-                }
-            )
-            curr_green_ml -= quant * 100
+            if quant > 0:
+                plan.append(
+                    {
+                        "potion_type": [0, 100, 0, 0],
+                        "quantity": quant,
+                    }
+                )
+                curr_green_ml -= quant * 100
 
         if curr_blue_ml >= 100:
-            temp_blue = curr_blue_ml - 50 # save for purp
-            quant = temp_blue // 100
-            plan.append(
-                {
-                    "potion_type": [0, 0, 100, 0],
-                    "quantity": quant,
-                }
-            )
-            curr_blue_ml -= quant * 100
+            quant = curr_blue_ml // 100
+            if quant > 0:
+                plan.append(
+                    {
+                        "potion_type": [0, 0, 100, 0],
+                        "quantity": quant,
+                    }
+                )
+                curr_blue_ml -= quant * 100
 
         return plan
 

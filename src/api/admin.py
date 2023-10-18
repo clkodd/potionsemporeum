@@ -35,6 +35,11 @@ def reset():
                             UPDATE potion_mixes 
                             SET quantity = 0
                             """))
+
+        connection.execute(
+            sqlalchemy.text("""
+                            TRUNCATE TABLE carts
+                            """))
     
     return "OK"
 
