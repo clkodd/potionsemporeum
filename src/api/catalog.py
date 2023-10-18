@@ -30,9 +30,13 @@ def get_catalog():
     # else:
     #     top_six = potions
 
-    top_six = potions
+    # top_six = potions
+    potions_in_catalog = 0
 
-    for row in top_six:
+    for row in potions:
+        if potions_in_catalog == 6:
+            print(catalog)
+            return catalog
         catalog.append(
             {
                 "sku": row.sku,
@@ -42,7 +46,7 @@ def get_catalog():
                 "potion_type": row.formula
             }
         )
+        potions_in_catalog += 1
 
-    print(catalog)
-
-    return catalog
+    # print(catalog)
+    # return catalog

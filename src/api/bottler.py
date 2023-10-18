@@ -101,6 +101,8 @@ def get_bottle_plan():
                     for i in range(4):
                         curr_mls[i] -= formula[i]
                     potion_added = True
+
+        plan = []            
         
         for formula in intermediate_plan.keys():
             plan.append(
