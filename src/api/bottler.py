@@ -76,6 +76,11 @@ def get_bottle_plan():
         row1 = ml_inventory.first()
         curr_mls = [row1.red_ml, row1.green_ml, row1.blue_ml, row1.dark_ml]
 
+        quantities = [row[1] for row in formulas]
+        if sum(quantities) == 300:
+            return []
+
+        space_left = 300 - sum(quantities)
         
         formula_list = [row[0] for row in formulas]
         formula_list = formula_list[:-1] # don't make the potion with the greatest quantity
@@ -89,7 +94,7 @@ def get_bottle_plan():
                 for i in range(4):
                     if curr_mls[i] < formula[i]:
                         make = False
-                if make:
+                if make and space_left > 1:
                     if str(formula) in intermediate_plan:
                         intermediate_plan[str(formula)] += 1
                     else:
@@ -97,6 +102,7 @@ def get_bottle_plan():
                     for i in range(4):
                         curr_mls[i] -= formula[i]
                     potion_added = True
+                    space_left -= 1
 
         plan = []            
         
