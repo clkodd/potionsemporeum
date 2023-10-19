@@ -29,7 +29,7 @@ def create_cart(new_cart: NewCart):
                                     """),
                                    {"customer_str": new_cart.customer})
 
-    return {"cart_id": new_row.scalar()}
+        return {"cart_id": new_row.scalar()}
 
 
 @router.get("/{cart_id}")

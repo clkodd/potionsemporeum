@@ -74,8 +74,11 @@ def get_bottle_plan():
                                         """))
 
         row1 = ml_inventory.first()
-        formula_list = [row[0] for row in formulas]
         curr_mls = [row1.red_ml, row1.green_ml, row1.blue_ml, row1.dark_ml]
+
+        
+        formula_list = [row[0] for row in formulas]
+        formula_list = formula_list[1:] # don't make the potion with the greatest quantity
         intermediate_plan = {}
 
         potion_added = True

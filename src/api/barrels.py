@@ -14,17 +14,16 @@ router = APIRouter(
 
 class Barrel(BaseModel):
     sku: str
-
     ml_per_barrel: int
     potion_type: list[int]
     price: int
-
     quantity: int
 
 
 @router.post("/deliver")
 def post_deliver_barrels(barrels_delivered: list[Barrel]):
     """ """
+
     print(barrels_delivered)
 
     cost = 0
@@ -68,6 +67,7 @@ def get_wholesale_purchase_plan(wholesale_catalog: list[Barrel]):
     """ 
     Gets called once a day
     """
+
     print(wholesale_catalog)
 
     with db.engine.begin() as connection:
@@ -127,63 +127,3 @@ def get_wholesale_purchase_plan(wholesale_catalog: list[Barrel]):
         potions.remove(buy_set)
     
     return plan
-
-    # for barrel in wholesale_catalog:
-    #     if "DARK" in barrel.sku:
-    #         quant = running_gold // barrel.price if barrel.quantity >= running_gold // barrel.price else barrel.quantity
-    #         if running_gold >= barrel.price * quant and quant > 0:
-    #             plan.append(
-    #                         {
-    #                             "sku": barrel.sku,
-    #                             "quantity": quant,
-    #                         }
-    #             )
-    #             running_gold -= barrel.price * quant
-
-    # for barrel in wholesale_catalog:
-    #     if buy_color1 in barrel.sku and size in barrel.sku:
-    #         quant = running_gold // barrel.price // 3 if running_gold // barrel.price >= 3 else running_gold // barrel.price
-    #         quant = quant if barrel.quantity >= quant else barrel.quantity
-    #         if running_gold >= barrel.price * quant and quant > 0:
-    #             plan.append(
-    #                         {
-    #                             "sku": barrel.sku,
-    #                             "quantity": quant,
-    #                         }
-    #             )
-    #             running_gold -= barrel.price * quant
-
-    # potions.remove(buy_set1)
-    # buy_set2 = min(potions)
-    # buy_color2 = buy_set2[1]
-
-    # for barrel in wholesale_catalog:
-    #     if buy_color2 in barrel.sku and size in barrel.sku:
-    #         quant = running_gold // barrel.price // 2 if running_gold // barrel.price >= 2 else running_gold // barrel.price
-    #         quant = quant if barrel.quantity >= quant else barrel.quantity
-    #         if running_gold >= barrel.price * quant and quant > 0:
-    #             plan.append(
-    #                         {
-    #                             "sku": barrel.sku,
-    #                             "quantity": quant,
-    #                         }
-    #             )
-    #             running_gold -= barrel.price * quant
-
-    # potions.remove(buy_set2)
-    # buy_set3 = min(potions)
-    # buy_color3 = buy_set3[1]
-
-    # for barrel in wholesale_catalog:
-    #     if buy_color3 in barrel.sku and size in barrel.sku:
-    #         quant = running_gold // barrel.price
-    #         quant = quant if barrel.quantity >= quant else barrel.quantity
-    #         if running_gold >= barrel.price * quant and quant > 0:
-    #             plan.append(
-    #                         {
-    #                             "sku": barrel.sku,
-    #                             "quantity": quant,
-    #                         }
-    #             )
-
-    # return plan
