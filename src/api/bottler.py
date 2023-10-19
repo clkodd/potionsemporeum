@@ -70,7 +70,7 @@ def get_bottle_plan():
                         sqlalchemy.text("""
                                         SELECT formula, quantity 
                                         FROM potion_mixes
-                                        ORDER BY quantity DESC
+                                        ORDER BY quantity
                                         """))
 
         row1 = ml_inventory.first()
@@ -78,7 +78,7 @@ def get_bottle_plan():
 
         
         formula_list = [row[0] for row in formulas]
-        formula_list = formula_list[1:] # don't make the potion with the greatest quantity
+        formula_list = formula_list[:-1] # don't make the potion with the greatest quantity
         intermediate_plan = {}
 
         potion_added = True
