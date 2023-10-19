@@ -39,6 +39,7 @@ def reset():
         connection.execute(
             sqlalchemy.text("""
                             TRUNCATE TABLE carts
+                            RESTART IDENTITY
                             """))
     
     return "OK"
