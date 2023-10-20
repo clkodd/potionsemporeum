@@ -87,11 +87,13 @@ def get_bottle_plan():
         if space_left < 225:
             formula_list = formula_list[:-1] # don't make the potion with the greatest quantity
         intermediate_plan = {}
+        print("reach intermediate")
 
         potion_added = True
         while potion_added:
             potion_added = False
             for formula in formula_list:
+                print("formula: {}".format(formula))
                 make = True
                 for i in range(4):
                     if curr_mls[i] < formula[i]:
