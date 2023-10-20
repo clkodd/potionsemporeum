@@ -40,6 +40,7 @@ def reset():
             sqlalchemy.text("""
                             TRUNCATE TABLE carts
                             RESTART IDENTITY
+                            CASCADE
                             """))
     
     return "OK"
