@@ -83,7 +83,8 @@ def get_bottle_plan():
         space_left = 300 - sum(quantities)
         
         formula_list = [row[0] for row in formulas]
-        formula_list = formula_list[:-1] # don't make the potion with the greatest quantity
+        if len(formula_list) > 6:
+            formula_list = formula_list[:-1] # don't make the potion with the greatest quantity
         intermediate_plan = {}
 
         potion_added = True
