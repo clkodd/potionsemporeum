@@ -84,6 +84,7 @@ def get_bottle_plan():
         print("spaces left: {}".format(space_left))
         
         formula_list = [row[0] for row in formulas]
+        print("formulas: {}".format(formula_list))
         if space_left < 225:
             formula_list = formula_list[:-1] # don't make the potion with the greatest quantity
         intermediate_plan = {}
