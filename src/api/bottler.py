@@ -77,19 +77,17 @@ def get_bottle_plan():
         curr_mls = [row1.red_ml, row1.green_ml, row1.blue_ml, row1.dark_ml]
 
         pyList = [row for row in formulas]
+        formula_list = [row[0] for row in pyList]
         quantities = [row[1] for row in pyList]
+        intermediate_plan = {}
+
         if sum(quantities) == 300:
             return []
 
         space_left = 300 - sum(quantities)
-        print("spaces left: {}".format(space_left))
-        
-        formula_list = [row[0] for row in pyList]
-        print("formulas: {}".format(formula_list))
-        if space_left < 225:
+        if space_left < 250:
             formula_list = formula_list[:-1] # don't make the potion with the greatest quantity
-        intermediate_plan = {}
-
+        
         potion_added = True
         while potion_added:
             potion_added = False
