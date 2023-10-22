@@ -26,74 +26,74 @@ def post_deliver_barrels(barrels_delivered: list[Barrel]):
 
     print(barrels_delivered)
 
-    # cost = 0
-    # new_red_ml = 0
-    # new_green_ml = 0
-    # new_blue_ml = 0
-    # new_dark_ml = 0
-
-    # for barrel in barrels_delivered:
-    #     cost += barrel.price * barrel.quantity
-    #     if "RED" in barrel.sku:
-    #         new_red_ml += barrel.ml_per_barrel * barrel.quantity
-    #     elif "GREEN" in barrel.sku:
-    #         new_green_ml += barrel.ml_per_barrel * barrel.quantity
-    #     elif "BLUE" in barrel.sku:
-    #         new_blue_ml += barrel.ml_per_barrel * barrel.quantity
-    #     elif "DARK" in barrel.sku:
-    #         new_dark_ml += barrel.ml_per_barrel * barrel.quantity
-
-    # with db.engine.begin() as connection:
-    #     connection.execute(
-    #         sqlalchemy.text("""
-    #                         UPDATE global_inventory 
-    #                         SET gold = gold - :cost,
-    #                         red_ml = red_ml + :new_red_ml,
-    #                         green_ml = green_ml + :new_green_ml,
-    #                         blue_ml = blue_ml + :new_blue_ml,
-    #                         dark_ml = dark_ml + :new_dark_ml
-    #                         """),
-    #                        {"cost": cost,
-    #                         "new_red_ml": new_red_ml,
-    #                         "new_green_ml": new_green_ml,
-    #                         "new_blue_ml": new_blue_ml,
-    #                         "new_dark_ml": new_dark_ml})
+    cost = 0
+    new_red_ml = 0
+    new_green_ml = 0
+    new_blue_ml = 0
+    new_dark_ml = 0
 
     for barrel in barrels_delivered:
-        with db.engine.begin() as connection:
-            new_row = connection.execute(
-                        sqlalchemy.text("""
-                                        INSERT INTO account_transactions (description) 
-                                        VALUES ('Purchasing :quantity :barrel_sku (total :mls mL, :cost gold')
-                                        RETURNING transaction_id
-                                        """),
-                                       {"quantity": barrel.quantity,
-                                        "barrel_sku": "'" + barrel.sku + "'",
-                                        "mls": barrel.ml_per_barrel * barrel.quantity,
-                                        "cost": barrel.price * barrel.quantity})
+        cost += barrel.price * barrel.quantity
+        if "RED" in barrel.sku:
+            new_red_ml += barrel.ml_per_barrel * barrel.quantity
+        elif "GREEN" in barrel.sku:
+            new_green_ml += barrel.ml_per_barrel * barrel.quantity
+        elif "BLUE" in barrel.sku:
+            new_blue_ml += barrel.ml_per_barrel * barrel.quantity
+        elif "DARK" in barrel.sku:
+            new_dark_ml += barrel.ml_per_barrel * barrel.quantity
 
-            trans_id = new_row.scalar()
+    with db.engine.begin() as connection:
+        connection.execute(
+            sqlalchemy.text("""
+                            UPDATE global_inventory 
+                            SET gold = gold - :cost,
+                            red_ml = red_ml + :new_red_ml,
+                            green_ml = green_ml + :new_green_ml,
+                            blue_ml = blue_ml + :new_blue_ml,
+                            dark_ml = dark_ml + :new_dark_ml
+                            """),
+                           {"cost": cost,
+                            "new_red_ml": new_red_ml,
+                            "new_green_ml": new_green_ml,
+                            "new_blue_ml": new_blue_ml,
+                            "new_dark_ml": new_dark_ml})
 
-            if "RED" in barrel.sku:
-                ml_account_num = 3
-            elif "GREEN" in barrel.sku:
-                ml_account_num = 4
-            elif "BLUE" in barrel.sku:
-                ml_account_num = 5
-            else:
-                ml_account_num = 2
+    # for barrel in barrels_delivered:
+    #     with db.engine.begin() as connection:
+    #         new_row = connection.execute(
+    #                     sqlalchemy.text("""
+    #                                     INSERT INTO account_transactions (description) 
+    #                                     VALUES ('Purchasing :quantity :barrel_sku (total :mls mL, :cost gold')
+    #                                     RETURNING transaction_id
+    #                                     """),
+    #                                    {"quantity": barrel.quantity,
+    #                                     "barrel_sku": barrel.sku,
+    #                                     "mls": barrel.ml_per_barrel * barrel.quantity,
+    #                                     "cost": barrel.price * barrel.quantity})
+
+    #         trans_id = new_row.scalar()
+
+    #         if "RED" in barrel.sku:
+    #             ml_account_num = 3
+    #         elif "GREEN" in barrel.sku:
+    #             ml_account_num = 4
+    #         elif "BLUE" in barrel.sku:
+    #             ml_account_num = 5
+    #         else:
+    #             ml_account_num = 2
                 
-            connection.execute(
-                sqlalchemy.text("""
-                                INSERT INTO account_ledger_entries (account_id, account_transaction_id, change) 
-                                VALUES (:gold_id, :transaction_id, :cost),
-                                (:gold_id, :transaction_id, :added_mls)
-                                """),
-                               {"gold_id": 1,
-                                "transaction_id": trans_id,
-                                "cost": barrel.price * barrel.quantity * -1,
-                                "color_id": ml_account_num,
-                                "added_mls": barrel.ml_per_barrel * barrel.quantity})
+    #         connection.execute(
+    #             sqlalchemy.text("""
+    #                             INSERT INTO account_ledger_entries (account_id, account_transaction_id, change) 
+    #                             VALUES (:gold_id, :transaction_id, :cost),
+    #                             (:gold_id, :transaction_id, :added_mls)
+    #                             """),
+    #                            {"gold_id": 1,
+    #                             "transaction_id": trans_id,
+    #                             "cost": barrel.price * barrel.quantity * -1,
+    #                             "color_id": ml_account_num,
+    #                             "added_mls": barrel.ml_per_barrel * barrel.quantity})
 
     return "OK"
 
