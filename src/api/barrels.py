@@ -64,7 +64,7 @@ def post_deliver_barrels(barrels_delivered: list[Barrel]):
             new_row = connection.execute(
                         sqlalchemy.text("""
                                         INSERT INTO account_transactions (description) 
-                                        VALUES ("Purchasing :quantity :barrel_sku (total :mls mL, :cost gold")
+                                        VALUES ('Purchasing :quantity :barrel_sku (total :mls mL, :cost gold')
                                         RETURNING transaction_id
                                         """),
                                        {"quantity": barrel.quantity,
