@@ -28,6 +28,15 @@ def get_inventory():
             total_potions += row.quantity
             
         mls = row1.red_ml + row1.blue_ml + row1.green_ml + row1.dark_ml
+
+        gold = connection.execute(
+                    sqlalchemy.text("""
+                                    SELECT SUM(change) 
+                                    FROM account_ledger_entries
+                                    WHERE account_id = 1
+                                    """))
+        bal = gold.scalar()
+        print("GOLD TOTAL: {}".format(gold))
         
         return {"number_of_potions": total_potions, "ml_in_barrels": mls, "gold": row1.gold}
 
