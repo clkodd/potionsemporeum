@@ -70,10 +70,10 @@ def post_deliver_barrels(barrels_delivered: list[Barrel]):
                                        {"quantity": barrel.quantity,
                                         "barrel_sku": barrel.sku,
                                         "mls": barrel.ml_per_barrel * barrel.quantity,
-                                        "cost": barrel.cost * barrel.quantity})
+                                        "cost": barrel.price * barrel.quantity})
 
             trans_id = new_row.scalar()
-            
+
             if "RED" in barrel.sku:
                 ml_account_num = 3
             elif "GREEN" in barrel.sku:
@@ -91,7 +91,7 @@ def post_deliver_barrels(barrels_delivered: list[Barrel]):
                                 """),
                                {"gold_id": 1,
                                 "transaction_id": trans_id,
-                                "cost": barrel.cost * barrel.quantity * -1,
+                                "cost": barrel.price * barrel.quantity * -1,
                                 "color_id": ml_account_num,
                                 "added_mls": barrel.ml_per_barrel * barrel.quantity})
 
