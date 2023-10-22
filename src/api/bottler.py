@@ -85,8 +85,10 @@ def get_bottle_plan():
             return []
 
         space_left = 300 - sum(quantities)
-        if space_left < 250:
+        if space_left < 275:
             formula_list = formula_list[:-1] # don't make the potion with the greatest quantity
+        if space_left < 100:
+            formula_list = formula_list[:-1] # don't make the 2 potion with the greatest quantities
         
         potion_added = True
         while potion_added:
