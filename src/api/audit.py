@@ -19,15 +19,31 @@ def get_inventory():
 
     with db.engine.begin() as connection:
 
-        result = connection.execute(sqlalchemy.text("SELECT * FROM global_inventory"))
-        potions = connection.execute(sqlalchemy.text("SELECT quantity FROM potion_mixes"))
-        row1 = result.first()
+        # result = connection.execute(sqlalchemy.text("SELECT * FROM global_inventory"))
+        # potions = connection.execute(sqlalchemy.text("SELECT quantity FROM potion_mixes"))
+        # row1 = result.first()
         
-        total_potions = 0
-        for row in potions:
-            total_potions += row.quantity
+        # total_potions = 0
+        # for row in potions:
+        #     total_potions += row.quantity
             
-        mls = row1.red_ml + row1.blue_ml + row1.green_ml + row1.dark_ml
+        # mls = row1.red_ml + row1.blue_ml + row1.green_ml + row1.dark_ml
+
+        potions = connection.execute(
+                    sqlalchemy.text("""
+                                    SELECT SUM(change) AS num
+                                    FROM account_ledger_entries
+                                    WHERE account_id > 5
+                                    """))
+        potions = potions.first()
+
+        mls = connection.execute(
+                    sqlalchemy.text("""
+                                    SELECT SUM(change) AS total
+                                    FROM account_ledger_entries
+                                    WHERE account_id BETWEEN 2 AND 5
+                                    """))
+        mls = mls.first()
 
         gold = connection.execute(
                     sqlalchemy.text("""
@@ -35,11 +51,12 @@ def get_inventory():
                                     FROM account_ledger_entries
                                     WHERE account_id = 1
                                     """))
-        #bal = gold.first()
-        #print("GOLD TOTAL: {}".format(bal.balance))
-        print("GOLD TOTAL: {}".format(gold.balance))
+        gold = gold.first()
+
         
-        return {"number_of_potions": total_potions, "ml_in_barrels": mls, "gold": row1.gold}
+        # print("GOLD TOTAL: {}".format(gold.balance))
+        
+        return {"number_of_potions": potions.num, "ml_in_barrels": mls.total, "gold": gold.balance}
 
 
 class Result(BaseModel):

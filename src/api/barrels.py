@@ -107,29 +107,53 @@ def get_wholesale_purchase_plan(wholesale_catalog: list[Barrel]):
     print(wholesale_catalog)
 
     with db.engine.begin() as connection:
-        result = connection.execute(
+        gold = connection.execute(
                     sqlalchemy.text("""
-                                    SELECT * 
-                                    FROM global_inventory
+                                    SELECT SUM(change) AS balance
+                                    FROM account_ledger_entries
+                                    WHERE account_id = 1
                                     """))
-        row1 = result.first()
+        gold = gold.first()
 
-    plan = []
+        red = connection.execute(
+                    sqlalchemy.text("""
+                                    SELECT SUM(change) AS balance
+                                    FROM account_ledger_entries
+                                    WHERE account_id = 3
+                                    """))
+        red = red.first()
 
-    reds = [row1.red_ml, "RED"]
-    greens = [row1.green_ml, "GREEN"]
-    blues = [row1.blue_ml, "BLUE"]
+        green = connection.execute(
+                    sqlalchemy.text("""
+                                    SELECT SUM(change) AS balance
+                                    FROM account_ledger_entries
+                                    WHERE account_id = 4
+                                    """))
+        green = green.first()
 
-    running_gold = row1.gold
+        blue = connection.execute(
+                    sqlalchemy.text("""
+                                    SELECT SUM(change) AS balance
+                                    FROM account_ledger_entries
+                                    WHERE account_id = 5
+                                    """))
+        blue = blue.first()
 
-    if "LARGE" in wholesale_catalog[0].sku and row1.gold > 1500:
+    reds = [red.balance, "RED"]
+    greens = [green.balance, "GREEN"]
+    blues = [blue.balance, "BLUE"]
+    potions = [reds, greens, blues]
+
+    running_gold = gold.balance
+
+    if "LARGE" in wholesale_catalog[0].sku and running_gold > 1500:
         size = "LARGE"
-    elif "MEDIUM" in wholesale_catalog[0].sku and row1.gold > 800:
+    elif "MEDIUM" in wholesale_catalog[0].sku and running_gold > 800:
         size = "MEDIUM"
     else:
         size = "SMALL"
 
-    potions = [reds, greens, blues]
+    plan = []
 
     for barrel in wholesale_catalog:
         if "DARK" in barrel.sku:
