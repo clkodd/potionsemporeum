@@ -54,6 +54,15 @@ def reset():
                             TRUNCATE TABLE account_ledger_entries
                             RESTART IDENTITY
                             """))
+
+        connection.execute(
+                sqlalchemy.text("""
+                                INSERT INTO account_ledger_entries (account_id, account_transaction_id, change) 
+                                VALUES (:gold_id, :transaction_id, :start)
+                                """),
+                               {"gold_id": 1,
+                                "transaction_id": trans_id,
+                                "start": 100})
     
     return "OK"
 
