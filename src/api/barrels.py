@@ -64,7 +64,7 @@ def post_deliver_barrels(barrels_delivered: list[Barrel]):
             new_row = connection.execute(
                         sqlalchemy.text("""
                                         INSERT INTO account_transactions (description) 
-                                        VALUES ('Purchasing :quantity ':barrel_sku' (total :mls mL, :cost gold')
+                                        VALUES ('Purchased :quantity ':barrel_sku' (total :mls mL, :cost gold)')
                                         RETURNING transaction_id
                                         """),
                                        {"quantity": barrel.quantity,
@@ -87,7 +87,7 @@ def post_deliver_barrels(barrels_delivered: list[Barrel]):
                 sqlalchemy.text("""
                                 INSERT INTO account_ledger_entries (account_id, account_transaction_id, change) 
                                 VALUES (:gold_id, :transaction_id, :cost),
-                                (:gold_id, :transaction_id, :added_mls)
+                                (:color_id, :transaction_id, :added_mls)
                                 """),
                                {"gold_id": 1,
                                 "transaction_id": trans_id,
