@@ -35,8 +35,9 @@ def get_inventory():
                                     FROM account_ledger_entries
                                     WHERE account_id = 1
                                     """))
-        bal = gold.first()
-        print("GOLD TOTAL: {}".format(bal.balance))
+        #bal = gold.first()
+        #print("GOLD TOTAL: {}".format(bal.balance))
+        print("GOLD TOTAL: {}".format(gold.balance))
         
         return {"number_of_potions": total_potions, "ml_in_barrels": mls, "gold": row1.gold}
 
