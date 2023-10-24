@@ -145,9 +145,7 @@ def get_bottle_plan():
                                         """))
 
        
-        formula_list = [row for row in formulas]
-        print(curr_mls)
-        print(formula_list)
+        formula_list = [row[0][0] for row in formulas]
 
         intermediate_plan = {}
 
