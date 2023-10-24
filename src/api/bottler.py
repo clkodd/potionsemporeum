@@ -149,10 +149,16 @@ def get_bottle_plan():
                                         FROM potion_mixes
                                         """))
 
+        potions = connection.execute(
+                    sqlalchemy.text("""
+                                    SELECT SUM(change) AS num
+                                    FROM account_ledger_entries
+                                    WHERE account_id > 5
+                                    """))
+        num_potions = potions.first()
+        space_left = 300 - num_potions
        
         formula_list = [row[0] for row in formulas]
-        print(formula_list)
-
         intermediate_plan = {}
 
         potion_added = True
