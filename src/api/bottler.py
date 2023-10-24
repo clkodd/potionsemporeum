@@ -36,7 +36,8 @@ def post_deliver_bottles(potions_delivered: list[PotionInventory]):
                                             SELECT potion_id, sku
                                             FROM potion_mixes 
                                             WHERE formula = :potion_type
-                                            """))
+                                            """),
+                                           {"potion_type": potion.potion_type})
             potion_name = potion_name.first()
 
             new_row = connection.execute(
