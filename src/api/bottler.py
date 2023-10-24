@@ -63,10 +63,10 @@ def post_deliver_bottles(potions_delivered: list[PotionInventory]):
                                {"potion_id": potion_name.potion_id + 5,
                                 "transaction_id": trans_id,
                                 "potions_made": potion.quantity,
-                                "red_used": potion.potion_type[0] * -1,
-                                "green_used": potion.potion_type[1] * -1,
-                                "blue_used": potion.potion_type[2] * -1,
-                                "dark_used": potion.potion_type[3] * -1})
+                                "red_used": potion.potion_type[0] * potion.quantity * -1,
+                                "green_used": potion.potion_type[1] * potion.quantity * -1,
+                                "blue_used": potion.potion_type[2] * potion.quantity * -1,
+                                "dark_used": potion.potion_type[3] * potion.quantity * -1})
 
         #     connection.execute(
         #         sqlalchemy.text("""
