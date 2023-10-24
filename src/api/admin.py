@@ -47,12 +47,7 @@ def reset():
             sqlalchemy.text("""
                             TRUNCATE TABLE account_transactions
                             RESTART IDENTITY
-                            """))
-
-        connection.execute(
-            sqlalchemy.text("""
-                            TRUNCATE TABLE account_ledger_entries
-                            RESTART IDENTITY
+                            CASCADE
                             """))
 
         connection.execute(
