@@ -142,7 +142,6 @@ def get_bottle_plan():
                         sqlalchemy.text("""
                                         SELECT formula
                                         FROM potion_mixes
-                                        WHERE NOT 
                                         """))
 
         formula_list = [row for row in formulas]
