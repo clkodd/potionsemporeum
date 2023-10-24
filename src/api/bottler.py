@@ -145,7 +145,8 @@ def get_bottle_plan():
                                         """))
 
        
-        formula_list = [row[0][0] for row in formulas]
+        pyList = [row for row in formulas]
+        formula_list = [row[0] for row in pyList]
 
         intermediate_plan = {}
 
