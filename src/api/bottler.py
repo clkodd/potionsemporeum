@@ -143,8 +143,11 @@ def get_bottle_plan():
                                         SELECT formula
                                         FROM potion_mixes
                                         """))
-                                        
-        formula_list = [row[0] for row in formulas]
+
+       
+        formula_list = [row for row in formulas]
+        print(curr_mls)
+        print(formula_list)
 
         intermediate_plan = {}
 
