@@ -96,26 +96,50 @@ def checkout(cart_id: int, cart_checkout: CartCheckout):
                                     ON cart_items.potion_id = potion_mixes.potion_id
                                     WHERE cart_items.cart_id = :given_cart_id
                                     """),
-                                    {"given_cart_id": cart_id})
+                                   {"given_cart_id": cart_id})
 
         for row in cart:
             cost += row.price * row.quantity
             total_potions += row.quantity
 
+            new_row = connection.execute(
+                        sqlalchemy.text("""
+                                        INSERT INTO account_transactions (description) 
+                                        VALUES ('Sold :quantity ':potion_sku' (cost :cost gold)')
+                                        RETURNING transaction_id
+                                        """),
+                                       {"quantity": row.quantity,
+                                        "potion_sku": row.sku,
+                                        "cost": row.price * row.quantity})
+            trans_id = new_row.scalar()
+
             connection.execute(
-                    sqlalchemy.text("""
-                                    UPDATE potion_mixes
-                                    SET quantity = quantity - :num_sold
-                                    WHERE potion_id = :row_potion_id
-                                    """),
-                                   {"num_sold": row.quantity,
-                                    "row_potion_id": row.potion_id})
+                sqlalchemy.text("""
+                                INSERT INTO account_ledger_entries (account_id, account_transaction_id, change) 
+                                VALUES (:gold_id, :transaction_id, :cost),
+                                (:potion_id, :transaction_id, :num_sold)
+                                """),
+                               {"gold_id": 1,
+                                "transaction_id": trans_id,
+                                "cost": row.price * row.quantity,
+                                "potion_id": row.potion_id + 5,
+                                "num_sold": row.quantity * -1})
+
+
+        #     connection.execute(
+        #             sqlalchemy.text("""
+        #                             UPDATE potion_mixes
+        #                             SET quantity = quantity - :num_sold
+        #                             WHERE potion_id = :row_potion_id
+        #                             """),
+        #                            {"num_sold": row.quantity,
+        #                             "row_potion_id": row.potion_id})
         
-        connection.execute(
-            sqlalchemy.text("""
-                            UPDATE global_inventory 
-                            SET gold = gold + :cost
-                            """),
-                           {"cost": cost})
+        # connection.execute(
+        #     sqlalchemy.text("""
+        #                     UPDATE global_inventory 
+        #                     SET gold = gold + :cost
+        #                     """),
+        #                    {"cost": cost})
 
     return {"total_potions_bought": total_potions, "total_gold_paid": cost}

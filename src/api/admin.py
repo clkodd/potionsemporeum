@@ -63,6 +63,12 @@ def reset():
                                {"gold_id": 1,
                                 "transaction_id": trans_id,
                                 "start": 100})
+
+        connection.execute(
+                sqlalchemy.text("""
+                                INSERT INTO account_transactions (description) 
+                                VALUES ('Initial 100 gold')
+                                """))
     
     return "OK"
 
