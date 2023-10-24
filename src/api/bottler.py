@@ -156,7 +156,7 @@ def get_bottle_plan():
                                     WHERE account_id > 5
                                     """))
         num_potions = potions.first()
-        space_left = 300 - num_potions
+        space_left = 300 - num_potions.num
        
         formula_list = [row[0] for row in formulas]
         intermediate_plan = {}
