@@ -52,17 +52,14 @@ def reset():
 
         connection.execute(
                 sqlalchemy.text("""
-                                INSERT INTO account_ledger_entries (account_id, account_transaction_id, change) 
-                                VALUES (:gold_id, :transaction_id, :start)
-                                """),
-                               {"gold_id": 1,
-                                "transaction_id": trans_id,
-                                "start": 100})
+                                INSERT INTO account_transactions (description) 
+                                VALUES ('Initial 100 gold')
+                                """))
 
         connection.execute(
                 sqlalchemy.text("""
-                                INSERT INTO account_transactions (description) 
-                                VALUES ('Initial 100 gold')
+                                INSERT INTO account_ledger_entries (account_id, account_transaction_id, change) 
+                                VALUES (1, 1, 100)
                                 """))
     
     return "OK"
