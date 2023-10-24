@@ -136,7 +136,12 @@ def get_bottle_plan():
                                     """))
         dark = dark.first()
 
-        curr_mls = [red.balance, green.balance, blue.balance, dark.balance]
+        red = 0 if red.balance == None else red.balance
+        green = 0 if green.balance == None else green.balance
+        blue = 0 if blue.balance == None else blue.balance
+        dark = 0 if dark.balance == None else dark.balance
+
+        curr_mls = [red, green, blue, dark]
 
         formulas = connection.execute(
                         sqlalchemy.text("""
@@ -145,7 +150,7 @@ def get_bottle_plan():
                                         """))
 
        
-        formula_list = [row for row, in formulas]
+        formula_list = [row[0] for row in formulas]
         print(formula_list)
 
         intermediate_plan = {}
