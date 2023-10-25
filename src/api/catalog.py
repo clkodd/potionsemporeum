@@ -35,18 +35,18 @@ def get_catalog():
                                     FROM account_ledger_entries
                                     WHERE account_id = :potion_id
                                     """),
-                                   {"potion_id": row.potion_id})
+                                   {"potion_id": row.potion_id + 5})
             quant = quant.first()
-
-        catalog.append(
-            {
-                "sku": row.sku,
-                "name": row.name,
-                "quantity": quant.balance,
-                "price": row.price,
-                "potion_type": row.formula
-            }
-        )
-        potions_in_catalog += 1
+        if quant > 0:
+            catalog.append(
+                {
+                    "sku": row.sku,
+                    "name": row.name,
+                    "quantity": quant.balance,
+                    "price": row.price,
+                    "potion_type": row.formula
+                }
+            )
+            potions_in_catalog += 1
 
     return catalog
