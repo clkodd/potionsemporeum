@@ -37,7 +37,7 @@ def get_catalog():
                                     """),
                                    {"potion_id": row.potion_id + 5})
             quant = quant.first()
-        if quant > 0:
+        if quant != None and quant > 0:
             catalog.append(
                 {
                     "sku": row.sku,
