@@ -25,11 +25,6 @@ def post_deliver_bottles(potions_delivered: list[PotionInventory]):
 
     with db.engine.begin() as connection:
 
-        # red_ml_used = sum(potion.quantity * potion.potion_type[0] for potion in potions_delivered)
-        # green_ml_used = sum(potion.quantity * potion.potion_type[1] for potion in potions_delivered)
-        # blue_ml_used = sum(potion.quantity * potion.potion_type[2] for potion in potions_delivered)
-        # dark_ml_used = sum(potion.quantity * potion.potion_type[3] for potion in potions_delivered)
-
         for potion in potions_delivered:
             potion_name = connection.execute(
                             sqlalchemy.text("""
@@ -43,7 +38,7 @@ def post_deliver_bottles(potions_delivered: list[PotionInventory]):
             new_row = connection.execute(
                         sqlalchemy.text("""
                                         INSERT INTO account_transactions (description) 
-                                        VALUES ('Made :quantity ':potion' (total :mls mL)')
+                                        VALUES ('Made :quantity ':potion' (recipe :mls)')
                                         RETURNING transaction_id
                                         """),
                                        {"quantity": potion.quantity,
@@ -67,28 +62,6 @@ def post_deliver_bottles(potions_delivered: list[PotionInventory]):
                                 "green_used": potion.potion_type[1] * potion.quantity * -1,
                                 "blue_used": potion.potion_type[2] * potion.quantity * -1,
                                 "dark_used": potion.potion_type[3] * potion.quantity * -1})
-
-        #     connection.execute(
-        #         sqlalchemy.text("""
-        #                         UPDATE potion_mixes 
-        #                         SET quantity = quantity + :num_made
-        #                         WHERE formula = :potion_type
-        #                         """),
-        #                        {"num_made": potion.quantity, 
-        #                         "potion_type": potion.potion_type})
-        
-        # connection.execute(
-        #     sqlalchemy.text("""
-        #                     UPDATE global_inventory
-        #                     SET red_ml = red_ml - :red_ml_used,
-        #                     green_ml = green_ml - :green_ml_used,
-        #                     blue_ml = blue_ml - :blue_ml_used,
-        #                     dark_ml = dark_ml - :dark_ml_used
-        #                     """),
-        #                    {"red_ml_used": red_ml_used,
-        #                     "green_ml_used": green_ml_used,
-        #                     "blue_ml_used": blue_ml_used,
-        #                     "dark_ml_used": dark_ml_used})
 
     return "OK"
 
@@ -165,18 +138,23 @@ def get_bottle_plan():
         potion_added = True
         while potion_added:
             potion_added = False
+
             for formula in formula_list:
                 make = True
+
                 for i in range(4):
                     if curr_mls[i] < formula[i]:
                         make = False
+
                 if make and space_left > 1:
                     if str(formula) in intermediate_plan:
                         intermediate_plan[str(formula)] += 1
                     else:
                         intermediate_plan[str(formula)] = 1
+
                     for i in range(4):
                         curr_mls[i] -= formula[i]
+                        
                     potion_added = True
                     space_left -= 1
 
@@ -192,67 +170,3 @@ def get_bottle_plan():
 
         print(plan)
         return plan
-
-
-# ----------------------------------------------------------------------------------
-
-        # ml_inventory = connection.execute(
-        #                     sqlalchemy.text("""
-        #                                     SELECT * 
-        #                                     FROM global_inventory
-        #                                     """))
-
-        # formulas = connection.execute(
-        #                 sqlalchemy.text("""
-        #                                 SELECT formula, quantity 
-        #                                 FROM potion_mixes
-        #                                 ORDER BY quantity
-        #                                 """))
-
-        # row1 = ml_inventory.first()
-        # curr_mls = [row1.red_ml, row1.green_ml, row1.blue_ml, row1.dark_ml]
-
-        # pyList = [row for row in formulas]
-        # formula_list = [row[0] for row in pyList]
-        # quantities = [row[1] for row in pyList]
-        # intermediate_plan = {}
-
-        # if sum(quantities) == 300:
-        #     return []
-
-        # space_left = 300 - sum(quantities)
-        # if space_left < 275:
-        #     formula_list = formula_list[:-1] # don't make the potion with the greatest quantity
-        # if space_left < 100:
-        #     formula_list = formula_list[:-1] # don't make the 2 potion with the greatest quantities
-        
-        # # potion_added = True
-        # # while potion_added:
-        # #     potion_added = False
-        # #     for formula in formula_list:
-        #         make = True
-        #         for i in range(4):
-        #             if curr_mls[i] < formula[i]:
-        #                 make = False
-        #         if make and space_left > 1:
-        #             if str(formula) in intermediate_plan:
-        #                 intermediate_plan[str(formula)] += 1
-        #             else:
-        #                 intermediate_plan[str(formula)] = 1
-        #             for i in range(4):
-        #                 curr_mls[i] -= formula[i]
-        #             potion_added = True
-        #             space_left -= 1
-
-        # plan = []            
-        
-        # for formula in intermediate_plan.keys():
-        #     plan.append(
-        #         {
-        #             "potion_type": eval(formula),
-        #             "quantity": intermediate_plan[formula]
-        #         }
-        #     )
-
-        # print(plan)
-        # return plan

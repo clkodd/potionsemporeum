@@ -16,10 +16,8 @@ def get_catalog():
     with db.engine.begin() as connection:
         potions = connection.execute(
                     sqlalchemy.text("""
-                                    SELECT sku, name, formula, price, quantity 
-                                    FROM potion_mixes 
-                                    WHERE quantity > 0
-                                    ORDER BY quantity DESC
+                                    SELECT potion_id, sku, name, formula, price 
+                                    FROM potion_mixes
                                     """))
 
     catalog = []
@@ -29,11 +27,22 @@ def get_catalog():
         if potions_in_catalog == 6:
             print(catalog)
             return catalog
+
+        with db.engine.begin() as connection:
+            quant = connection.execute(
+                    sqlalchemy.text("""
+                                    SELECT SUM(change) AS balance
+                                    FROM account_ledger_entries
+                                    WHERE account_id = :potion_id
+                                    """),
+                                   {"potion_id": row.potion_id})
+            quant = quant.first()
+
         catalog.append(
             {
                 "sku": row.sku,
                 "name": row.name,
-                "quantity": row.quantity,
+                "quantity": quant.balance,
                 "price": row.price,
                 "potion_type": row.formula
             }

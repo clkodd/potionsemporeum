@@ -26,39 +26,8 @@ def post_deliver_barrels(barrels_delivered: list[Barrel]):
 
     print(barrels_delivered)
 
-    # cost = 0
-    # new_red_ml = 0
-    # new_green_ml = 0
-    # new_blue_ml = 0
-    # new_dark_ml = 0
-
-    # for barrel in barrels_delivered:
-    #     cost += barrel.price * barrel.quantity
-    #     if "RED" in barrel.sku:
-    #         new_red_ml += barrel.ml_per_barrel * barrel.quantity
-    #     elif "GREEN" in barrel.sku:
-    #         new_green_ml += barrel.ml_per_barrel * barrel.quantity
-    #     elif "BLUE" in barrel.sku:
-    #         new_blue_ml += barrel.ml_per_barrel * barrel.quantity
-    #     elif "DARK" in barrel.sku:
-    #         new_dark_ml += barrel.ml_per_barrel * barrel.quantity
-
-    # with db.engine.begin() as connection:
-    #     connection.execute(
-    #         sqlalchemy.text("""
-    #                         UPDATE global_inventory 
-    #                         SET gold = gold - :cost,
-    #                         red_ml = red_ml + :new_red_ml,
-    #                         green_ml = green_ml + :new_green_ml,
-    #                         blue_ml = blue_ml + :new_blue_ml,
-    #                         dark_ml = dark_ml + :new_dark_ml
-    #                         """),
-    #                        {"cost": cost,
-    #                         "new_red_ml": new_red_ml,
-    #                         "new_green_ml": new_green_ml,
-    #                         "new_blue_ml": new_blue_ml,
-    #                         "new_dark_ml": new_dark_ml})
     with db.engine.begin() as connection:
+
         for barrel in barrels_delivered:
             new_row = connection.execute(
                         sqlalchemy.text("""
@@ -70,7 +39,6 @@ def post_deliver_barrels(barrels_delivered: list[Barrel]):
                                         "barrel_sku": barrel.sku,
                                         "mls": barrel.ml_per_barrel * barrel.quantity,
                                         "cost": barrel.price * barrel.quantity})
-
             trans_id = new_row.scalar()
 
             if "RED" in barrel.sku:

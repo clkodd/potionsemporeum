@@ -125,21 +125,4 @@ def checkout(cart_id: int, cart_checkout: CartCheckout):
                                 "potion_id": row.potion_id + 5,
                                 "num_sold": row.quantity * -1})
 
-
-        #     connection.execute(
-        #             sqlalchemy.text("""
-        #                             UPDATE potion_mixes
-        #                             SET quantity = quantity - :num_sold
-        #                             WHERE potion_id = :row_potion_id
-        #                             """),
-        #                            {"num_sold": row.quantity,
-        #                             "row_potion_id": row.potion_id})
-        
-        # connection.execute(
-        #     sqlalchemy.text("""
-        #                     UPDATE global_inventory 
-        #                     SET gold = gold + :cost
-        #                     """),
-        #                    {"cost": cost})
-
     return {"total_potions_bought": total_potions, "total_gold_paid": cost}
