@@ -106,6 +106,19 @@ def get_wholesale_purchase_plan(wholesale_catalog: list[Barrel]):
                                     """))
         blue = blue.first()
 
+        potions = connection.execute(
+                    sqlalchemy.text("""
+                                    SELECT SUM(change) AS num
+                                    FROM account_ledger_entries
+                                    WHERE account_id > 5
+                                    """))
+        potions = potions.first()
+
+    if (red.balance + green.balance + blue.balance + dark.balance) > 1500:
+        return []
+    if potions.num > 290:
+        return []
+
     reds = [red.balance, "RED"]
     greens = [green.balance, "GREEN"]
     blues = [blue.balance, "BLUE"]
