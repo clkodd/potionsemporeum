@@ -18,6 +18,7 @@ def get_catalog():
                     sqlalchemy.text("""
                                     SELECT potion_id, sku, name, formula, price 
                                     FROM potion_mixes
+                                    ORDER BY price
                                     """))
 
     catalog = []

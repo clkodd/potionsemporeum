@@ -114,7 +114,7 @@ def get_wholesale_purchase_plan(wholesale_catalog: list[Barrel]):
                                     """))
         potions = potions.first()
 
-    if (red.balance + green.balance + blue.balance + dark.balance) > 1500:
+    if (red.balance + green.balance + blue.balance) > 10000:
         return []
     if potions.num > 290:
         return []
