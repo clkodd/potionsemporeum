@@ -70,7 +70,10 @@ def search_orders(
     with db.engine.begin() as connection:
         red = connection.execute(
                         sqlalchemy.text("""
-                                        SELECT carts.*, cart_items.*, potion_mixes.*, account_transactions.*
+                                        SELECT carts.cart_id, carts.customer, 
+                                               cart_items.quantity, 
+                                               potion_mixes.name, potion_mixes.price, 
+                                               account_transactions.created_at
                                         FROM carts
                                         JOIN cart_items
                                         ON carts.cart_id = cart_items.cart_id
