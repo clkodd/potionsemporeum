@@ -58,31 +58,41 @@ def search_orders(
     time is 5 total line items.
     """
 
+    # metadata_obj = sqlalchemy.MetaData()
+    # events = sqlalchemy.Table("events", metadata_obj, autoload_with=engine)
+
     # if sort_col is search_sort_options.customer_name:
-    #     order_by = db.movies.c.title
+    #     order_by = carts.c.customer
     # elif sort_col is search_sort_options.item_sku:
-    #     ordel_by = item_sku
-    # elif sort_col is search_sort_options:
-    #     order_by = sqlalchemy.desc(db.movies.c.imdb_rating)
+    #     order_by = potion_mixes.c.name
+    # elif sort_col is search_sort_options.line_item_total:
+    #     order_by = item_sku
+    # elif sort_col is search_sort_options.timestamp:
+    #     order_by = account_transactions.c.created_at
     # else:
     #     assert False
 
     with db.engine.begin() as connection:
         red = connection.execute(
                         sqlalchemy.text("""
-                                        SELECT carts.cart_id, carts.customer, 
+                                        SELECT carts.customer, 
                                                cart_items.quantity, 
-                                               potion_mixes.name, potion_mixes.price, 
-                                               account_transactions.created_at
+                                               potion_mixes.name, 
+                                               account_transactions.created_at,
+                                               account_ledger_entries.change
                                         FROM carts
                                         JOIN cart_items
-                                        ON carts.cart_id = cart_items.cart_id
+                                          ON carts.cart_id = cart_items.cart_id
                                         JOIN potion_mixes
-                                        ON cart_items.potion_id = potion_mixes.potion_id
+                                          ON cart_items.potion_id = potion_mixes.potion_id
                                         JOIN account_transactions
-                                        ON carts.cart_id = account_transactions.cart_id
+                                          ON carts.cart_id = account_transactions.cart_id
+                                        JOIN account_ledger_entries
+                                          ON account_transactions.transaction_id = account_ledger_entries.account_transaction_id
+                                             WHERE account_id = 1
                                         LIMIT 10
                                         """))
+                                       #{"order_by": order_by}))
 
         first = red.first()
         print(first)
