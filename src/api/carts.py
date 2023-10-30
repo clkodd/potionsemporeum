@@ -58,14 +58,14 @@ def search_orders(
     time is 5 total line items.
     """
 
-    if sort_col is search_sort_options.customer_name:
-        order_by = db.movies.c.title
-    elif sort_col is search_sort_options.item_sku:
-        ordel_by = item_sku
-    elif sort_col is search_sort_options:
-        order_by = sqlalchemy.desc(db.movies.c.imdb_rating)
-    else:
-        assert False
+    # if sort_col is search_sort_options.customer_name:
+    #     order_by = db.movies.c.title
+    # elif sort_col is search_sort_options.item_sku:
+    #     ordel_by = item_sku
+    # elif sort_col is search_sort_options:
+    #     order_by = sqlalchemy.desc(db.movies.c.imdb_rating)
+    # else:
+    #     assert False
 
     with db.engine.begin() as connection:
         red = connection.execute(
@@ -192,26 +192,26 @@ def checkout(cart_id: int, cart_checkout: CartCheckout):
 
             new_row = connection.execute(
                         sqlalchemy.text("""
-                                        INSERT INTO account_transactions (description) 
-                                        VALUES ('Sold :quantity ':potion_sku' (cost :cost gold)')
+                                        INSERT INTO account_transactions (description, cart_id) 
+                                        VALUES ('Sold :quantity ':potion_sku' (cost :cost gold)', :cart_id)
                                         RETURNING transaction_id
                                         """),
                                        {"quantity": row.quantity,
                                         "potion_sku": row.sku,
-                                        "cost": row.price * row.quantity})
+                                        "cost": row.price * row.quantity,
+                                        "cart_id": cart_id})
             trans_id = new_row.scalar()
 
             connection.execute(
                 sqlalchemy.text("""
-                                INSERT INTO account_ledger_entries (account_id, account_transaction_id, change, cart_id) 
+                                INSERT INTO account_ledger_entries (account_id, account_transaction_id, change) 
                                 VALUES (:gold_id, :transaction_id, :cost),
-                                (:potion_id, :transaction_id, :num_sold, :car_id)
+                                (:potion_id, :transaction_id, :num_sold)
                                 """),
                                {"gold_id": 1,
                                 "transaction_id": trans_id,
                                 "cost": row.price * row.quantity,
                                 "potion_id": row.potion_id + 5,
-                                "num_sold": row.quantity * -1,
-                                "car_id": cart_id})
+                                "num_sold": row.quantity * -1})
 
     return {"total_potions_bought": total_potions, "total_gold_paid": cost}
