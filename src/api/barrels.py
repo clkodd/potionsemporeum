@@ -74,6 +74,15 @@ def get_wholesale_purchase_plan(wholesale_catalog: list[Barrel]):
     print(wholesale_catalog)
 
     with db.engine.begin() as connection:
+        # gold = connection.execute(
+        #             sqlalchemy.text("""
+        #                             SELECT account_id, SUM(change) AS balance
+        #                             FROM account_ledger_entries
+        #                             WHERE account_id <= 5
+        #                             GROUP BY account_id
+        #                             """))
+        # gold = gold.first()
+
         gold = connection.execute(
                     sqlalchemy.text("""
                                     SELECT SUM(change) AS balance
@@ -114,11 +123,6 @@ def get_wholesale_purchase_plan(wholesale_catalog: list[Barrel]):
                                     """))
         potions = potions.first()
 
-    if (red.balance + green.balance + blue.balance) > 10000:
-        return []
-    if potions.num > 290:
-        return []
-
     reds = [red.balance, "RED"]
     greens = [green.balance, "GREEN"]
     blues = [blue.balance, "BLUE"]
@@ -137,7 +141,7 @@ def get_wholesale_purchase_plan(wholesale_catalog: list[Barrel]):
 
     for barrel in wholesale_catalog:
         if "DARK" in barrel.sku:
-            quant = running_gold // barrel.price if barrel.quantity >= running_gold // barrel.price else barrel.quantity
+            quant = min(running_gold // barrel.price, barrel.quantity)
             if running_gold >= barrel.price * quant and quant > 0:
                 plan.append(
                             {
@@ -146,6 +150,11 @@ def get_wholesale_purchase_plan(wholesale_catalog: list[Barrel]):
                             }
                 )
                 running_gold -= barrel.price * quant
+
+    if (red.balance + green.balance + blue.balance) > 10000:
+        return plan
+    if potions.num > 250:
+        return plan
 
     for i in range(3):
         buy_set = min(potions)

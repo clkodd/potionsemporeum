@@ -58,6 +58,32 @@ def search_orders(
     time is 5 total line items.
     """
 
+    if sort_col is search_sort_options.customer_name:
+        order_by = db.movies.c.title
+    elif sort_col is search_sort_options.item_sku:
+        ordel_by = item_sku
+    elif sort_col is search_sort_options:
+        order_by = sqlalchemy.desc(db.movies.c.imdb_rating)
+    else:
+        assert False
+
+    with db.engine.begin() as connection:
+        red = connection.execute(
+                        sqlalchemy.text("""
+                                        SELECT carts.*, cart_items.*, potion_mixes.*, account_transactions.*
+                                        FROM carts
+                                        JOIN cart_items
+                                        ON carts.cart_id = cart_items.cart_id
+                                        JOIN potion_mixes
+                                        ON cart_items.potion_id = potion_mixes.potion_id
+                                        JOIN account_transactions
+                                        ON carts.cart_id = account_transactions.cart_id
+                                        LIMIT 10
+                                        """))
+
+        first = red.first()
+        print(first)
+
     return {
         "previous": "",
         "next": "",
@@ -177,14 +203,15 @@ def checkout(cart_id: int, cart_checkout: CartCheckout):
 
             connection.execute(
                 sqlalchemy.text("""
-                                INSERT INTO account_ledger_entries (account_id, account_transaction_id, change) 
+                                INSERT INTO account_ledger_entries (account_id, account_transaction_id, change, cart_id) 
                                 VALUES (:gold_id, :transaction_id, :cost),
-                                (:potion_id, :transaction_id, :num_sold)
+                                (:potion_id, :transaction_id, :num_sold, :car_id)
                                 """),
                                {"gold_id": 1,
                                 "transaction_id": trans_id,
                                 "cost": row.price * row.quantity,
                                 "potion_id": row.potion_id + 5,
-                                "num_sold": row.quantity * -1})
+                                "num_sold": row.quantity * -1,
+                                "car_id": cart_id})
 
     return {"total_potions_bought": total_potions, "total_gold_paid": cost}
