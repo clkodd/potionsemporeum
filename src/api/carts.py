@@ -92,8 +92,7 @@ def search_orders(
                                                     ON cart_items.potion_id = potion_mixes.potion_id
                                                 JOIN account_transactions
                                                     ON carts.cart_id = account_transactions.cart_id
-                                                ORDER BY customer
-                                                LIMIT 10""")).all()
+                                                ORDER BY customer""")).all()
 
     print(results)
     return 0
