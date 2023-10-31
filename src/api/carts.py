@@ -78,9 +78,13 @@ def search_orders(
             JOIN account_ledger_entries
                 ON account_transactions.transaction_id = account_ledger_entries.account_transaction_id
                 WHERE account_id = 1
-            ORDER BY customer
-            LIMIT 3
-            """
+            ORDER BY customer"""
+
+    with db.engine.begin() as connection:
+        results = connection.execute(
+                        sqlalchemy.text(query))
+
+    items = []
 
     for row in results:
         items.append(
@@ -94,6 +98,7 @@ def search_orders(
         )
 
     print(items)
+
 
     return {
         "previous": "",
@@ -110,7 +115,6 @@ def search_orders(
         # ],
     }
 
-
     if sort_col is search_sort_options.customer_name:
         query += "customer"
     elif sort_col is search_sort_options.item_sku:
@@ -125,7 +129,8 @@ def search_orders(
     if sort_order is search_sort_order.desc:
         query += " DESC"
     
-    query += "\nLIMIT  10"
+    offset = str((search_page - 1) * 5)
+    query += "\nLIMIT  \nOFFSET " + offset
 
     with db.engine.begin() as connection:
         results = connection.execute(
