@@ -62,7 +62,7 @@ def search_orders(
     # events = sqlalchemy.Table("events", metadata_obj, autoload_with=engine)
 
     query = """
-            SELECT carts.customer,
+            SELECT carts.customer AS customer,
                    cart_items.quantity,
                    potion_mixes.name, 
                    account_transactions.transaction_id,
@@ -78,7 +78,7 @@ def search_orders(
             JOIN   account_ledger_entries
                 ON account_transactions.transaction_id = account_ledger_entries.account_transaction_id
                    WHERE account_id = 1
-            ORDER BY carts.customer
+            ORDER BY customer
             LIMIT  10
             """
 
