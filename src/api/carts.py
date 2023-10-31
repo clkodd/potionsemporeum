@@ -61,54 +61,75 @@ def search_orders(
     # metadata_obj = sqlalchemy.MetaData()
     # events = sqlalchemy.Table("events", metadata_obj, autoload_with=engine)
 
-    # if sort_col is search_sort_options.customer_name:
-    #     order_by = carts.c.customer
-    # elif sort_col is search_sort_options.item_sku:
-    #     order_by = potion_mixes.c.name
-    # elif sort_col is search_sort_options.line_item_total:
-    #     order_by = item_sku
-    # elif sort_col is search_sort_options.timestamp:
-    #     order_by = account_transactions.c.created_at
-    # else:
-    #     assert False
+    query = """
+            SELECT carts.customer AS name, 
+                    cart_items.quantity AS quantity, 
+                    potion_mixes.name AS potion, 
+                    account_transactions.transaction_id AS id,
+                    account_transactions.created_at AS time,
+                    account_ledger_entries.change AS cost
+            FROM carts
+            JOIN cart_items
+                ON carts.cart_id = cart_items.cart_id
+            JOIN potion_mixes
+                ON cart_items.potion_id = potion_mixes.potion_id
+            JOIN account_transactions
+                ON carts.cart_id = account_transactions.cart_id
+            JOIN account_ledger_entries
+                ON account_transactions.transaction_id = account_ledger_entries.account_transaction_id
+                    WHERE account_id = 1
+            LIMIT 10
+            ORDER BY 
+            """
+
+    if sort_col is search_sort_options.customer_name:
+        query += "customer"
+    elif sort_col is search_sort_options.item_sku:
+        order_by = potion_mixes.c.name
+        query += "potion"
+    elif sort_col is search_sort_options.line_item_total:
+        query += "cost"
+    elif sort_col is search_sort_options.timestamp:
+        query += "time"
+    else:
+        assert False
+
+    if sort_order is search_sort_order.desc:
+        query += " DESC"
 
     with db.engine.begin() as connection:
-        red = connection.execute(
-                        sqlalchemy.text("""
-                                        SELECT carts.customer, 
-                                               cart_items.quantity, 
-                                               potion_mixes.name, 
-                                               account_transactions.created_at,
-                                               account_ledger_entries.change
-                                        FROM carts
-                                        JOIN cart_items
-                                          ON carts.cart_id = cart_items.cart_id
-                                        JOIN potion_mixes
-                                          ON cart_items.potion_id = potion_mixes.potion_id
-                                        JOIN account_transactions
-                                          ON carts.cart_id = account_transactions.cart_id
-                                        JOIN account_ledger_entries
-                                          ON account_transactions.transaction_id = account_ledger_entries.account_transaction_id
-                                             WHERE account_id = 1
-                                        LIMIT 10
-                                        """))
-                                       #{"order_by": order_by}))
+        results = connection.execute(
+                        sqlalchemy.text(query))
 
-        first = red.first()
-        print(first)
+    items = []
+
+    for row in results:
+        items.append(
+            {
+                "line_item_id": row.id,
+                "item_sku": row.potion,
+                "customer_name": row.name,
+                "line_item_total": row.cost,
+                "timestamp": row.time,
+            }
+        )
+
+    print(items)
+
 
     return {
         "previous": "",
         "next": "",
-        "results": [
-            {
-                "line_item_id": 1,
-                "item_sku": "1 oblivion potion",
-                "customer_name": "Scaramouche",
-                "line_item_total": 50,
-                "timestamp": "2021-01-01T00:00:00Z",
-            }
-        ],
+        "results": items,
+        # "results": [
+        #     {
+        #         "line_item_id": 1,
+        #         "item_sku": "1 oblivion potion",
+        #         "customer_name": "Scaramouche",
+        #         "line_item_total": 50,
+        #         "timestamp": "2021-01-01T00:00:00Z",
+        #     }
+        # ],
     }
 
 
