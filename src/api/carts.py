@@ -84,7 +84,7 @@ def search_orders(
                                                     cart_items.quantity AS quantity,
                                                     potion_mixes.name AS potion,
                                                     account_transactions.transaction_id AS id,
-                                                    account_transactions.created_at AS time,
+                                                    account_transactions.created_at AS time
                                                 FROM carts
                                                 JOIN cart_items
                                                     ON carts.cart_id = cart_items.cart_id
