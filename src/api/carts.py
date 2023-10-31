@@ -82,12 +82,16 @@ def search_orders(
                         sqlalchemy.text("""
                                                 SELECT carts.customer AS customer,
                                                     cart_items.quantity AS quantity,
-                                                    potion_mixes.name AS potion
+                                                    potion_mixes.name AS potion,
+                                                    account_transactions.transaction_id AS id,
+                                                    account_transactions.created_at AS time,
                                                 FROM carts
                                                 JOIN cart_items
                                                     ON carts.cart_id = cart_items.cart_id
                                                 JOIN potion_mixes
                                                     ON cart_items.potion_id = potion_mixes.potion_id
+                                                JOIN account_transactions
+                                                    ON carts.cart_id = account_transactions.cart_id
                                                 ORDER BY customer
                                                 LIMIT 10""")).all()
 
