@@ -78,27 +78,23 @@ def search_orders(
             JOIN   account_ledger_entries
                 ON account_transactions.transaction_id = account_ledger_entries.account_transaction_id
                    WHERE account_id = 1
-            LIMIT  10
-            ORDER BY customer
-            """
+            ORDER BY """
 
-    # if sort_col is search_sort_options.customer_name:
-    #     # query += "name"
-    #     query += "carts.customer"
-    # elif sort_col is search_sort_options.item_sku:
-    #     # query += "potion"
-    #     query += "potion_mixes.name"
-    # elif sort_col is search_sort_options.line_item_total:
-    #     # query += "cost"
-    #     query += "account_ledger_entries.change"
-    # elif sort_col is search_sort_options.timestamp:
-    #     # query += "time"
-    #     query += "account_transactions.created_at"
-    # else:
-    #     assert False
+    if sort_col is search_sort_options.customer_name:
+        query += "customer"
+    elif sort_col is search_sort_options.item_sku:
+        query += "potion"
+    elif sort_col is search_sort_options.line_item_total:
+        query += "cost"
+    elif sort_col is search_sort_options.timestamp:
+        query += "time"
+    else:
+        assert False
 
-    # if sort_order is search_sort_order.desc:
-    #     query += " DESC"
+    if sort_order is search_sort_order.desc:
+        query += " DESC"
+    
+    query += "\nLIMIT  10"
 
     with db.engine.begin() as connection:
         results = connection.execute(
@@ -111,7 +107,7 @@ def search_orders(
             {
                 "line_item_id": row.id,
                 "item_sku": row.potion,
-                "customer_name": row.name,
+                "customer_name": row.customer,
                 "line_item_total": row.cost,
                 "timestamp": row.time,
             }
