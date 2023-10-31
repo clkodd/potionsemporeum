@@ -78,48 +78,8 @@ def search_orders(
             JOIN account_ledger_entries
                 ON account_transactions.transaction_id = account_ledger_entries.account_transaction_id
                 WHERE account_id = 1
-            ORDER BY customer
-            LIMIT 5"""
-
-    with db.engine.begin() as connection:
-        results = connection.execute(
-                        sqlalchemy.text(query))
-
-    items = []
-
-    for row in results:
-        items.append(
-            {
-                "line_item_id": row.id,
-                "item_sku": row.potion,
-                "customer_name": row.customer,
-                "line_item_total": row.cost,
-                "timestamp": row.time,
-            }
-        )
-
-    print(items)
+            ORDER BY """
     
-    prev = nextt = None
-    if search_page > 1:
-        prev = search_page - 1
-    if len(items) > 5:
-        nextt = search_page + 1
-
-    return {
-        "previous": prev,
-        "next": nextt,
-        "results": items,
-        # "results": [
-        #     {
-        #         "line_item_id": 1,
-        #         "item_sku": "1 oblivion potion",
-        #         "customer_name": "Scaramouche",
-        #         "line_item_total": 50,
-        #         "timestamp": "2021-01-01T00:00:00Z",
-        #     }
-        # ],
-    }
 
     if sort_col is search_sort_options.customer_name:
         query += "customer"
@@ -134,9 +94,11 @@ def search_orders(
 
     if sort_order is search_sort_order.desc:
         query += " DESC"
+
+    search_page = int(search_page)
     
     offset = str((search_page - 1) * 5)
-    query += "\nLIMIT  \nOFFSET " + offset
+    query += "\nLIMIT 5\nOFFSET " + offset
 
     with db.engine.begin() as connection:
         results = connection.execute(
@@ -157,20 +119,16 @@ def search_orders(
 
     print(items)
 
+    prev = nextt = None
+    if search_page > 1:
+        prev = search_page - 1
+    if len(items) > 5:
+        nextt = search_page + 1
 
     return {
-        "previous": "",
-        "next": "",
+        "previous": prev,
+        "next": nextt,
         "results": items,
-        # "results": [
-        #     {
-        #         "line_item_id": 1,
-        #         "item_sku": "1 oblivion potion",
-        #         "customer_name": "Scaramouche",
-        #         "line_item_total": 50,
-        #         "timestamp": "2021-01-01T00:00:00Z",
-        #     }
-        # ],
     }
 
 
