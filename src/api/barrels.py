@@ -122,6 +122,8 @@ def get_wholesale_purchase_plan(wholesale_catalog: list[Barrel]):
                                     WHERE account_id > 5
                                     """))
         potions = potions.first()
+        if potions is None:
+            potion_num = 0
 
     red_ml = 0 if red.balance == None else red.balance
     green_ml = 0 if green.balance == None else green.balance
@@ -157,7 +159,7 @@ def get_wholesale_purchase_plan(wholesale_catalog: list[Barrel]):
 
     if (red_ml + green_ml + blue_ml) > 10000:
         return plan
-    if potions.num > 250:
+    if potions_num > 250:
         return plan
 
     for i in range(3):
