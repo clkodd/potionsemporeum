@@ -78,8 +78,24 @@ def search_orders(
             JOIN account_ledger_entries
                 ON account_transactions.transaction_id = account_ledger_entries.account_transaction_id
                 WHERE account_id = 1
-            ORDER BY """
+            ORDER BY customer"""
     
+    with db.engine.begin() as connection:
+        results = connection.execute(
+                        sqlalchemy.text(query = """
+                                                SELECT carts.customer AS customer,
+                                                    cart_items.quantity AS quantity,
+                                                    potion_mixes.name AS potion
+                                                FROM carts
+                                                JOIN cart_items
+                                                    ON carts.cart_id = cart_items.cart_id
+                                                JOIN potion_mixes
+                                                    ON cart_items.potion_id = potion_mixes.potion_id
+                                                ORDER BY customer
+                                                LIMIT 10""")).all()
+
+    print(results)
+    return 0
 
     if sort_col is search_sort_options.customer_name:
         query += "customer"
