@@ -78,7 +78,8 @@ def search_orders(
             JOIN account_ledger_entries
                 ON account_transactions.transaction_id = account_ledger_entries.account_transaction_id
                 WHERE account_id = 1
-            ORDER BY customer"""
+            ORDER BY customer
+            LIMIT 5"""
 
     with db.engine.begin() as connection:
         results = connection.execute(
@@ -98,11 +99,16 @@ def search_orders(
         )
 
     print(items)
-
+    
+    prev = nextt = None
+    if search_page > 1:
+        prev = search_page - 1
+    if len(items) > 5:
+        nextt = search_page + 1
 
     return {
-        "previous": "",
-        "next": "",
+        "previous": prev,
+        "next": nextt,
         "results": items,
         # "results": [
         #     {
