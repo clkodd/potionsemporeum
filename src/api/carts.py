@@ -27,7 +27,7 @@ class search_sort_order(str, Enum):
 
 @router.get("/search/", tags=["search"])
 def search_orders(
-    customer_name: str = "",
+    customer_name: str = " ",
     potion_sku: str = "",
     search_page: str = "1",
     sort_col: search_sort_options = search_sort_options.timestamp,
@@ -98,7 +98,7 @@ def search_orders(
 
     with db.engine.begin() as connection:
         results = connection.execute(
-                        sqlalchemy.text(query), {"customer_name": customer_name, "potion_name": potion_sku})
+                        sqlalchemy.text(query), {"customer_name": f"%{customer_name}%", "potion_name": f"%{potion_sku}%"})
 
     items = []
     for row in results:
