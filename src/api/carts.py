@@ -77,9 +77,9 @@ def search_orders(
             WHERE account_ledger_entries.account_id = 1 """
 
     if customer_name != "":
-        query += "\nAND customer ILIKE " + '%' + customer_name + '%'
+        query += "\nAND customer ILIKE " + f'%{customer_name}%'
     if potion_sku != "":
-        query += "\nAND potion ILIKE " + '%' + str(potion_sku) + '%'
+        query += "\nAND potion ILIKE " + f'%{potion_sku}%'
 
     if sort_col is search_sort_options.customer_name:
         query += "\nORDER BY customer"
