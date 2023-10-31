@@ -95,6 +95,7 @@ def search_orders(
                                                 ORDER BY customer""")).all()
 
     print(results)
+    print(len(results))
     return 0
 
     if sort_col is search_sort_options.customer_name:
