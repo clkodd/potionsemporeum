@@ -121,8 +121,9 @@ def get_wholesale_purchase_plan(wholesale_catalog: list[Barrel]):
                                     FROM account_ledger_entries
                                     WHERE account_id > 5
                                     """))
-        potions = potions.first()
-        if potions is None:
+        potions_num = potions.first()
+        print(potions_num)
+        if potions_num is None:
             potion_num = 0
 
     red_ml = 0 if red.balance == None else red.balance
