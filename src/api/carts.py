@@ -68,17 +68,48 @@ def search_orders(
                    account_transactions.transaction_id AS id,
                    account_transactions.created_at AS time,
                    account_ledger_entries.change AS cost
-            FROM   carts
-            JOIN   cart_items
+            FROM carts
+            JOIN cart_items
                 ON carts.cart_id = cart_items.cart_id
-            JOIN   potion_mixes
+            JOIN potion_mixes
                 ON cart_items.potion_id = potion_mixes.potion_id
-            JOIN   account_transactions
+            JOIN account_transactions
                 ON carts.cart_id = account_transactions.cart_id
-            JOIN   account_ledger_entries
+            JOIN account_ledger_entries
                 ON account_transactions.transaction_id = account_ledger_entries.account_transaction_id
-                   WHERE account_id = 1
-            ORDER BY """
+                WHERE account_id = 1
+            ORDER BY customer
+            LIMIT 3
+            """
+
+    for row in results:
+        items.append(
+            {
+                "line_item_id": row.id,
+                "item_sku": row.potion,
+                "customer_name": row.customer,
+                "line_item_total": row.cost,
+                "timestamp": row.time,
+            }
+        )
+
+    print(items)
+
+    return {
+        "previous": "",
+        "next": "",
+        "results": items,
+        # "results": [
+        #     {
+        #         "line_item_id": 1,
+        #         "item_sku": "1 oblivion potion",
+        #         "customer_name": "Scaramouche",
+        #         "line_item_total": 50,
+        #         "timestamp": "2021-01-01T00:00:00Z",
+        #     }
+        # ],
+    }
+
 
     if sort_col is search_sort_options.customer_name:
         query += "customer"
