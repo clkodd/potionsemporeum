@@ -27,7 +27,7 @@ class search_sort_order(str, Enum):
 
 @router.get("/search/", tags=["search"])
 def search_orders(
-    customer_name: str = " ",
+    customer_name: str = "",
     potion_sku: str = "",
     search_page: str = "1",
     sort_col: search_sort_options = search_sort_options.timestamp,
@@ -75,8 +75,8 @@ def search_orders(
             JOIN account_ledger_entries
                 ON account_transactions.transaction_id = account_ledger_entries.account_transaction_id
             WHERE account_ledger_entries.account_id = 1 
-            AND customer ILIKE :customer_name
-            AND potion ILIKE :potion_name """
+            AND carts.customer ILIKE :customer_name
+            AND potion_mixes.sku ILIKE :potion_name """
 
     if sort_col is search_sort_options.customer_name:
         query += "\nORDER BY customer"
