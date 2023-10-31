@@ -116,9 +116,9 @@ def search_orders(
     print(items)
 
     prev = nextt = None
-    if search_page > 1:
+    if search_page > 0:
         prev = search_page - 1
-    if len(items) > 5:
+    if len(items) == 5:
         nextt = search_page + 1
 
     return {
