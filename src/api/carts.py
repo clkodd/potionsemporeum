@@ -82,14 +82,21 @@ def search_orders(
             ORDER BY """
 
     if sort_col is search_sort_options.customer_name:
-        query += "name"
+        # query += "name"
+        query += "carts.customer"
+
     elif sort_col is search_sort_options.item_sku:
-        order_by = potion_mixes.c.name
-        query += "potion"
+        # query += "potion"
+        query += "potion_mixes.name"
+
     elif sort_col is search_sort_options.line_item_total:
-        query += "cost"
+        # query += "cost"
+        query += "account_ledger_entries.change"
+
     elif sort_col is search_sort_options.timestamp:
-        query += "time"
+        # query += "time"
+        query += "account_transactions.created_at"
+
     else:
         assert False
 
