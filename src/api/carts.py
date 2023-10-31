@@ -75,26 +75,7 @@ def search_orders(
             JOIN account_ledger_entries
                 ON account_transactions.transaction_id = account_ledger_entries.account_transaction_id
                 WHERE account_id = 1
-            ORDER BY customer"""
-    
-    with db.engine.begin() as connection:
-        results = connection.execute(
-                        sqlalchemy.text("""
-                                                SELECT carts.customer AS customer,
-                                                    cart_items.quantity AS quantity,
-                                                    account_transactions.transaction_id AS id,
-                                                    account_transactions.created_at AS time
-                                                FROM carts
-                                                JOIN cart_items
-                                                    ON carts.cart_id = cart_items.cart_id
-                                                JOIN account_transactions
-                                                    ON carts.cart_id = account_transactions.cart_id
-                                            
-                                                ORDER BY customer""")).all()
-
-    print(results)
-    print(len(results))
-    return 0
+            ORDER BY """
 
     if sort_col is search_sort_options.customer_name:
         query += "customer"
