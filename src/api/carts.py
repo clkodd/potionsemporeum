@@ -98,7 +98,7 @@ def search_orders(
 
     with db.engine.begin() as connection:
         results = connection.execute(
-                        sqlalchemy.text(query, {"customer_name": customer_name, "potion_name": potion_sku}))
+                        sqlalchemy.text(query), {"customer_name": customer_name, "potion_name": potion_sku})
 
     items = []
     for row in results:
