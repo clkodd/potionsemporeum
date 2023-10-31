@@ -82,7 +82,7 @@ def search_orders(
             ORDER BY """
 
     if sort_col is search_sort_options.customer_name:
-        query += "customer"
+        query += "name"
     elif sort_col is search_sort_options.item_sku:
         order_by = potion_mixes.c.name
         query += "potion"
