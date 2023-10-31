@@ -140,8 +140,6 @@ def get_bottle_plan():
             potion_added = False
 
             for formula in formula_list:
-                if formula == [0, 50, 50, 0]:
-                    pass
                 make = True
 
                 for i in range(4):

@@ -79,8 +79,7 @@ def search_orders(
                 ON account_transactions.transaction_id = account_ledger_entries.account_transaction_id
                     WHERE account_id = 1
             LIMIT 10
-            ORDER BY 
-            """
+            ORDER BY """
 
     if sort_col is search_sort_options.customer_name:
         query += "customer"
