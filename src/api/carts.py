@@ -29,7 +29,7 @@ class search_sort_order(str, Enum):
 def search_orders(
     customer_name: str = "",
     potion_sku: str = "",
-    search_page: str = "",
+    search_page: str = "0",
     sort_col: search_sort_options = search_sort_options.timestamp,
     sort_order: search_sort_order = search_sort_order.desc,
 ):
@@ -97,7 +97,7 @@ def search_orders(
 
     search_page = int(search_page)
     
-    offset = str((search_page - 1) * 5)
+    offset = str(search_page * 5)
     query += "\nLIMIT 5\nOFFSET " + offset
 
     with db.engine.begin() as connection:
