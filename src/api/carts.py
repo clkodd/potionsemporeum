@@ -58,9 +58,6 @@ def search_orders(
     time is 5 total line items.
     """
 
-    # metadata_obj = sqlalchemy.MetaData()
-    # events = sqlalchemy.Table("events", metadata_obj, autoload_with=engine)
-
     query = """
             SELECT carts.customer AS customer,
                    cart_items.quantity AS quantity,
@@ -82,7 +79,7 @@ def search_orders(
     
     with db.engine.begin() as connection:
         results = connection.execute(
-                        sqlalchemy.text(query = """
+                        sqlalchemy.text("""
                                                 SELECT carts.customer AS customer,
                                                     cart_items.quantity AS quantity,
                                                     potion_mixes.name AS potion
