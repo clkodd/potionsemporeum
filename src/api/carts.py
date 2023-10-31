@@ -74,12 +74,12 @@ def search_orders(
                 ON carts.cart_id = account_transactions.cart_id
             JOIN account_ledger_entries
                 ON account_transactions.transaction_id = account_ledger_entries.account_transaction_id
-            WHERE account_id = 1 """
+            WHERE account_ledger_entries.account_id = 1 """
 
     if customer_name != "":
-        query += "\nAND customer ILIKE " + customer_name
+        query += "\nAND customer ILIKE " + '%' + customer_name + '%'
     if potion_sku != "":
-        query += "\nAND potion ILIKE " + potion_sku
+        query += "\nAND potion ILIKE " + '%' + str(potion_sku) + '%'
 
     if sort_col is search_sort_options.customer_name:
         query += "\nORDER BY customer"
@@ -96,7 +96,6 @@ def search_orders(
         query += " DESC"
 
     search_page = int(search_page)
-    
     offset = str((search_page - 1) * 5)
     query += "\nLIMIT 5\nOFFSET " + offset
 
@@ -115,8 +114,6 @@ def search_orders(
                 "timestamp": row.time,
             }
         )
-
-    print(items)
 
     prev = nextt = None
     if search_page > 1:
