@@ -122,9 +122,8 @@ def get_wholesale_purchase_plan(wholesale_catalog: list[Barrel]):
                                     WHERE account_id > 5
                                     """))
         potions_num = potions.first()
-        print(potions_num.num)
-        return 0
-        if potions_num is None:
+
+        if potions_num.num is None:
             potion_num = 0
 
     red_ml = 0 if red.balance == None else red.balance
