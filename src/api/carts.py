@@ -62,12 +62,12 @@ def search_orders(
     # events = sqlalchemy.Table("events", metadata_obj, autoload_with=engine)
 
     query = """
-            SELECT carts.customer AS name, 
-                   cart_items.quantity AS quantity,
-                   potion_mixes.name AS potion, 
-                   account_transactions.transaction_id AS id,
-                   account_transactions.created_at AS time,
-                   account_ledger_entries.change AS cost
+            SELECT carts.customer,
+                   cart_items.quantity,
+                   potion_mixes.name, 
+                   account_transactions.transaction_id,
+                   account_transactions.created_at,
+                   account_ledger_entries.change
             FROM   carts
             JOIN   cart_items
                 ON carts.cart_id = cart_items.cart_id
@@ -78,8 +78,9 @@ def search_orders(
             JOIN   account_ledger_entries
                 ON account_transactions.transaction_id = account_ledger_entries.account_transaction_id
                    WHERE account_id = 1
+            ORDER BY carts.customer
             LIMIT  10
-            ORDER BY carts.customer DESC"""
+            """
 
     # if sort_col is search_sort_options.customer_name:
     #     # query += "name"
