@@ -29,7 +29,7 @@ class search_sort_order(str, Enum):
 def search_orders(
     customer_name: str = "",
     potion_sku: str = "",
-    search_page: str = "0",
+    search_page: str = "1",
     sort_col: search_sort_options = search_sort_options.timestamp,
     sort_order: search_sort_order = search_sort_order.desc,
 ):
@@ -74,17 +74,21 @@ def search_orders(
                 ON carts.cart_id = account_transactions.cart_id
             JOIN account_ledger_entries
                 ON account_transactions.transaction_id = account_ledger_entries.account_transaction_id
-                WHERE account_id = 1
-            ORDER BY """
+            WHERE account_id = 1 """
+
+    if customer_name != "":
+        query += "\nAND customer ILIKE " + customer_name
+    if potion_sku != "":
+        query += "\nAND potion ILIKE " + potion_sku
 
     if sort_col is search_sort_options.customer_name:
-        query += "customer"
+        query += "\nORDER BY customer"
     elif sort_col is search_sort_options.item_sku:
-        query += "potion"
+        query += "\nORDER BY potion"
     elif sort_col is search_sort_options.line_item_total:
-        query += "cost"
+        query += "\nORDER BY cost"
     elif sort_col is search_sort_options.timestamp:
-        query += "time"
+        query += "\nORDER BY time"
     else:
         assert False
 
@@ -93,7 +97,7 @@ def search_orders(
 
     search_page = int(search_page)
     
-    offset = str(search_page * 5)
+    offset = str((search_page - 1) * 5)
     query += "\nLIMIT 5\nOFFSET " + offset
 
     with db.engine.begin() as connection:
@@ -101,7 +105,6 @@ def search_orders(
                         sqlalchemy.text(query))
 
     items = []
-
     for row in results:
         items.append(
             {
@@ -116,7 +119,7 @@ def search_orders(
     print(items)
 
     prev = nextt = None
-    if search_page > 0:
+    if search_page > 1:
         prev = search_page - 1
     if len(items) == 5:
         nextt = search_page + 1
