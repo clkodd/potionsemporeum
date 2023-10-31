@@ -61,7 +61,7 @@ def search_orders(
     query = """
             SELECT carts.customer AS customer,
                    cart_items.quantity AS quantity,
-                   potion_mixes.name AS potion, 
+                   potion_mixes.sku AS potion, 
                    account_transactions.transaction_id AS id,
                    account_transactions.created_at AS time,
                    account_ledger_entries.change AS cost
@@ -77,9 +77,9 @@ def search_orders(
             WHERE account_ledger_entries.account_id = 1 """
 
     if customer_name != "":
-        query += "\nAND customer ILIKE " + f'%{customer_name}%'
+        query += "\nAND customer ILIKE :customer_name"
     if potion_sku != "":
-        query += "\nAND potion ILIKE " + f'%{potion_sku}%'
+        query += "\nAND potion ILIKE :potion_name"
 
     if sort_col is search_sort_options.customer_name:
         query += "\nORDER BY customer"
@@ -101,7 +101,7 @@ def search_orders(
 
     with db.engine.begin() as connection:
         results = connection.execute(
-                        sqlalchemy.text(query))
+                        sqlalchemy.text(query, {"customer_name": customer_name, "potion_name": potion_sku}))
 
     items = []
     for row in results:
