@@ -63,45 +63,41 @@ def search_orders(
 
     query = """
             SELECT carts.customer AS name, 
-                    cart_items.quantity AS quantity, 
-                    potion_mixes.name AS potion, 
-                    account_transactions.transaction_id AS id,
-                    account_transactions.created_at AS time,
-                    account_ledger_entries.change AS cost
-            FROM carts
-            JOIN cart_items
+                   cart_items.quantity AS quantity,
+                   potion_mixes.name AS potion, 
+                   account_transactions.transaction_id AS id,
+                   account_transactions.created_at AS time,
+                   account_ledger_entries.change AS cost
+            FROM   carts
+            JOIN   cart_items
                 ON carts.cart_id = cart_items.cart_id
-            JOIN potion_mixes
+            JOIN   potion_mixes
                 ON cart_items.potion_id = potion_mixes.potion_id
-            JOIN account_transactions
+            JOIN   account_transactions
                 ON carts.cart_id = account_transactions.cart_id
-            JOIN account_ledger_entries
+            JOIN   account_ledger_entries
                 ON account_transactions.transaction_id = account_ledger_entries.account_transaction_id
-                    WHERE account_id = 1
-            LIMIT 10
-            ORDER BY """
+                   WHERE account_id = 1
+            LIMIT  10
+            ORDER BY carts.customer DESC"""
 
-    if sort_col is search_sort_options.customer_name:
-        # query += "name"
-        query += "carts.customer"
+    # if sort_col is search_sort_options.customer_name:
+    #     # query += "name"
+    #     query += "carts.customer"
+    # elif sort_col is search_sort_options.item_sku:
+    #     # query += "potion"
+    #     query += "potion_mixes.name"
+    # elif sort_col is search_sort_options.line_item_total:
+    #     # query += "cost"
+    #     query += "account_ledger_entries.change"
+    # elif sort_col is search_sort_options.timestamp:
+    #     # query += "time"
+    #     query += "account_transactions.created_at"
+    # else:
+    #     assert False
 
-    elif sort_col is search_sort_options.item_sku:
-        # query += "potion"
-        query += "potion_mixes.name"
-
-    elif sort_col is search_sort_options.line_item_total:
-        # query += "cost"
-        query += "account_ledger_entries.change"
-
-    elif sort_col is search_sort_options.timestamp:
-        # query += "time"
-        query += "account_transactions.created_at"
-
-    else:
-        assert False
-
-    if sort_order is search_sort_order.desc:
-        query += " DESC"
+    # if sort_order is search_sort_order.desc:
+    #     query += " DESC"
 
     with db.engine.begin() as connection:
         results = connection.execute(
