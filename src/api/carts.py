@@ -74,12 +74,9 @@ def search_orders(
                 ON carts.cart_id = account_transactions.cart_id
             JOIN account_ledger_entries
                 ON account_transactions.transaction_id = account_ledger_entries.account_transaction_id
-            WHERE account_ledger_entries.account_id = 1 """
-
-    if customer_name != "":
-        query += "\nAND customer ILIKE :customer_name"
-    if potion_sku != "":
-        query += "\nAND potion ILIKE :potion_name"
+            WHERE account_ledger_entries.account_id = 1 
+            AND customer ILIKE :customer_name
+            AND potion ILIKE :potion_name """
 
     if sort_col is search_sort_options.customer_name:
         query += "\nORDER BY customer"
