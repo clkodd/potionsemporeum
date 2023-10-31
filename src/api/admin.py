@@ -22,12 +22,6 @@ def reset():
     with db.engine.begin() as connection:  
         connection.execute(
             sqlalchemy.text("""
-                            UPDATE potion_mixes 
-                            SET quantity = 0
-                            """))
-
-        connection.execute(
-            sqlalchemy.text("""
                             TRUNCATE TABLE carts
                             RESTART IDENTITY
                             CASCADE
