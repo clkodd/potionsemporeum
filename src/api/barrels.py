@@ -123,6 +123,7 @@ def get_wholesale_purchase_plan(wholesale_catalog: list[Barrel]):
                                     """))
         potions_num = potions.first()
         print(potions_num)
+        return 0
         if potions_num is None:
             potion_num = 0
 
