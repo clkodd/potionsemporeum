@@ -133,7 +133,7 @@ def get_wholesale_purchase_plan(wholesale_catalog: list[Barrel]):
     blues = [blue_ml, "BLUE"]
     potions = [reds, greens, blues]
 
-    running_gold = gold.balance
+    running_gold = gold.balance // 3
 
     if "LARGE" in wholesale_catalog[0].sku and running_gold > 1500:
         size = "LARGE"
