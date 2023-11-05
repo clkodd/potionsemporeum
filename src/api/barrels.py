@@ -135,12 +135,10 @@ def get_wholesale_purchase_plan(wholesale_catalog: list[Barrel]):
 
     running_gold = gold.balance // 3
 
-    if running_gold > 1500:
+    if "LARGE" in wholesale_catalog[0].sku and running_gold > 1500:
         size = "LARGE"
-    elif "MEDIUM" in wholesale_catalog[0].sku and running_gold > 800:
-        size = "MEDIUM"
     else:
-        size = "SMALL"
+        size = "MEDIUM"
 
     plan = []
 
