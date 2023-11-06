@@ -142,17 +142,17 @@ def get_wholesale_purchase_plan(wholesale_catalog: list[Barrel]):
 
     plan = []
 
-    for barrel in wholesale_catalog:
-        if "DARK" in barrel.sku:
-            quant = min(running_gold // barrel.price, barrel.quantity)
-            if running_gold >= barrel.price * quant and quant > 0:
-                plan.append(
-                            {
-                                "sku": barrel.sku,
-                                "quantity": quant,
-                            }
-                )
-                running_gold -= barrel.price * quant
+    # for barrel in wholesale_catalog:
+    #     if "DARK" in barrel.sku:
+    #         quant = min(running_gold // barrel.price, barrel.quantity)
+    #         if running_gold >= barrel.price * quant and quant > 0:
+    #             plan.append(
+    #                         {
+    #                             "sku": barrel.sku,
+    #                             "quantity": quant,
+    #                         }
+    #             )
+    #             running_gold -= barrel.price * quant
 
     if (red_ml + green_ml + blue_ml) > 10000:
         return plan
