@@ -132,7 +132,7 @@ def get_wholesale_purchase_plan(wholesale_catalog: list[Barrel]):
     greens = [green_ml, "GREEN"]
     blues = [blue_ml, "BLUE"]
     #potions = [reds, greens, blues]
-    potions = [greens, blues]
+    potions = [reds, blues]
 
     running_gold = gold.balance // 3
 
