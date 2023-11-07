@@ -131,7 +131,8 @@ def get_wholesale_purchase_plan(wholesale_catalog: list[Barrel]):
     reds = [red_ml, "RED"]
     greens = [green_ml, "GREEN"]
     blues = [blue_ml, "BLUE"]
-    potions = [reds, greens, blues]
+    #potions = [reds, greens, blues]
+    potions = [greens, blues]
 
     running_gold = gold.balance // 3
 
@@ -154,12 +155,12 @@ def get_wholesale_purchase_plan(wholesale_catalog: list[Barrel]):
     #             )
     #             running_gold -= barrel.price * quant
 
-    if (red_ml + green_ml + blue_ml) > 10000:
-        return plan
-    if num_pots > 250:
-        return plan
+    # if (red_ml + green_ml + blue_ml) > 10000:
+    #     return plan
+    # if num_pots > 250:
+    #     return plan
 
-    for i in range(3):
+    for i in range(len(potions)):
         buy_set = min(potions)
         buy_color = buy_set[1]
 
