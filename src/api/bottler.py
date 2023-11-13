@@ -133,7 +133,6 @@ def get_bottle_plan():
         space_left = 300 if num_potions.num == None else 300 - num_potions.num
        
         formula_list = [row[0] for row in formulas]
-        formula_list.remove([50, 0, 50, 0])
         intermediate_plan = {}
 
         potion_added = True
