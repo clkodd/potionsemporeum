@@ -158,7 +158,7 @@ def get_wholesale_purchase_plan(wholesale_catalog: list[Barrel]):
     # if ((red_ml + green_ml + blue_ml) > 10000) or (num_pots > 250):
     #     return plan
 
-    if red > 15000:
+    if red_ml > 15000:
         return plan
 
     for i in range(len(potions)):
