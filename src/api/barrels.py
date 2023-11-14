@@ -121,7 +121,7 @@ def get_wholesale_purchase_plan(wholesale_catalog: list[Barrel]):
                                     FROM account_ledger_entries
                                     WHERE account_id = 2
                                     """))
-        dark = blue.first()
+        dark = dark.first()
 
         potions = connection.execute(
                     sqlalchemy.text("""
