@@ -115,6 +115,14 @@ def get_wholesale_purchase_plan(wholesale_catalog: list[Barrel]):
                                     """))
         blue = blue.first()
 
+        dark = connection.execute(
+                    sqlalchemy.text("""
+                                    SELECT SUM(change) AS balance
+                                    FROM account_ledger_entries
+                                    WHERE account_id = 2
+                                    """))
+        dark = blue.first()
+
         potions = connection.execute(
                     sqlalchemy.text("""
                                     SELECT SUM(change) AS num
@@ -127,14 +135,24 @@ def get_wholesale_purchase_plan(wholesale_catalog: list[Barrel]):
     red_ml = 0 if red.balance == None else red.balance
     green_ml = 0 if green.balance == None else green.balance
     blue_ml = 0 if blue.balance == None else blue.balance
+    dark_ml = 0 if dark.balance == None else dark.balance
 
     reds = [red_ml, "RED"]
     greens = [green_ml, "GREEN"]
     blues = [blue_ml, "BLUE"]
-    #potions = [reds, greens, blues]
-    potions = [reds]
+    darks = [dark_ml, "DARK"]
+    potions = []
 
-    running_gold = gold.balance // 11
+    if red_ml < 1000:
+        potions.append(reds)
+    if green_ml < 1000:
+        potions.append(greens)
+    if blue_ml < 1000:
+        potions.append(blues)
+    if dark_ml < 1000:
+        potions.append(darks)
+
+    running_gold = 5000
 
     if "LARGE" in wholesale_catalog[0].sku and running_gold > 1500:
         size = "LARGE"
@@ -143,22 +161,7 @@ def get_wholesale_purchase_plan(wholesale_catalog: list[Barrel]):
 
     plan = []
 
-    # for barrel in wholesale_catalog:
-    #     if "DARK" in barrel.sku:
-    #         quant = min(running_gold // barrel.price, barrel.quantity)
-    #         if running_gold >= barrel.price * quant and quant > 0:
-    #             plan.append(
-    #                         {
-    #                             "sku": barrel.sku,
-    #                             "quantity": quant,
-    #                         }
-    #             )
-    #             running_gold -= barrel.price * quant
-
-    # if ((red_ml + green_ml + blue_ml) > 10000) or (num_pots > 250):
-    #     return plan
-
-    if red_ml > 15000:
+    if len(potions) == 0:
         return plan
 
     for i in range(len(potions)):
